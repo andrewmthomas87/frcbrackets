@@ -8,7 +8,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-
 import { getUser } from "./session.server";
 
 export const meta: MetaFunction = () => ({
