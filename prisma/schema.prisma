@@ -39,6 +39,8 @@ model Team {
 
   division    Division? @relation(fields: [divisionKey], references: [key])
   divisionKey String?
+
+  stats TeamStats?
 }
 
 model Division {
@@ -51,4 +53,71 @@ model Division {
   year      Int
 
   teams Team[]
+}
+
+model TeamStats {
+  team       Team @relation(fields: [teamNumber], references: [teamNumber])
+  teamNumber Int  @unique
+
+  nickname                        String
+  country                         String
+  stateProvince                   String
+  city                            String
+  district                        String
+  seedOrigin                      String
+  qualificationMatchesPlayed      Int
+  qualWins                        Int
+  qualLosses                      Int
+  qualTies                        Int
+  cargoBonusRPs                   Int
+  hangarBonusRPs                  Int
+  totalMatchesPlayed              Int
+  dQMatches                       Int
+  surrogateMatches                Int
+  totalWins                       Int
+  totalLosses                     Int
+  totalTies                       Int
+  winningMarginElo                Float
+  totalPoints                     Float
+  unpenalizedTotalPoints          Float
+  winningMargin                   Float
+  win                             Float
+  rankingPoints                   Float
+  autoPoints                      Float
+  teleopExcludingEndgamePoints    Float
+  endgamePoints                   Float
+  totalScoredCargo                Float
+  cargoBonusRPILS                 Float
+  hangarBonusRPILS                Float
+  autoTaxiPoints                  Float
+  autoTaxiRate                    Float
+  autoCargoPoints                 Float
+  autoCargoLower                  Float
+  autoCargoUpper                  Float
+  autoCargoTotal                  Float
+  quintetAchieved                 Float
+  quintetAchievedRate             Float
+  teleopCargoPoints               Float
+  teleopCargoLower                Float
+  teleopCargoUpper                Float
+  teleopCargoTotal                Float
+  endgameLowPoints                Float
+  atLeastLowEndgameRate           Float
+  endgameMidPoints                Float
+  atLeastMidEndgameRate           Float
+  endgameHighPoints               Float
+  atLeastEndgameHighRate          Float
+  endgameTraversalPoints          Float
+  endgameTraversalRate            Float
+  cargoBonus                      Float
+  cargoBonusCompletionPercentage  Float
+  cargoBonusContributingCargo     Float
+  hangarBonus                     Float
+  hangarBonusCompletionPercentage Float
+  foulCount                       Float
+  techFoulCount                   Float
+  foulPoints                      Float
+  foulsDrawn                      Float
+  techFoulsDrawn                  Float
+  foulPointsDrawn                 Float
 }

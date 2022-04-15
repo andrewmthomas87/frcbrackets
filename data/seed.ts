@@ -135,7 +135,7 @@ async function main() {
         break;
       default:
         console.log(
-          "Usage: npm run tba:seed -- [all | teams | divisions | division-teams]"
+          "Usage: npm run data:seed -- [all | teams | divisions | division-teams]"
         );
         break;
     }
