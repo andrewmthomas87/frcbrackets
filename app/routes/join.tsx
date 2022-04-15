@@ -1,11 +1,26 @@
+import {
+  Alert,
+  Box,
+  Button,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import type {
   ActionFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Link as RemixLink,
+  useActionData,
+  useSearchParams,
+} from "@remix-run/react";
 import * as React from "react";
+import Page from "~/components/Page";
 import { createUser, getUserByEmail } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import { validateEmail } from "~/utils";
@@ -70,95 +85,95 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Sign Up",
+    title: "Sign up - frcbrackets",
   };
 };
 
-export default function Join() {
+export default function Join(): JSX.Element {
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
-  const actionData = useActionData() as ActionData;
-  const emailRef = React.useRef<HTMLInputElement>(null);
-  const passwordRef = React.useRef<HTMLInputElement>(null);
+
+  const actionData = useActionData<ActionData>();
+
+  const emailRef = React.useRef<HTMLInputElement>();
+  const usernameRef = React.useRef<HTMLInputElement>();
+  const passwordRef = React.useRef<HTMLInputElement>();
+  const confirmPasswordRef = React.useRef<HTMLInputElement>();
 
   React.useEffect(() => {
-    if (actionData?.errors?.email) {
+    if (actionData?.errors.email) {
       emailRef.current?.focus();
-    } else if (actionData?.errors?.password) {
+    } else if (actionData?.errors.password) {
       passwordRef.current?.focus();
     }
   }, [actionData]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
-        <Form method="post" className="space-y-6" noValidate>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email address
-            </label>
-            <div className="mt-1">
-              <input
-                ref={emailRef}
-                id="email"
-                required
-                autoFocus={true}
-                name="email"
-                type="email"
-                autoComplete="email"
-                aria-invalid={actionData?.errors?.email ? true : undefined}
-                aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-              {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {actionData.errors.email}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <div className="mt-1">
-              <input
-                id="password"
-                ref={passwordRef}
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                aria-invalid={actionData?.errors?.password ? true : undefined}
-                aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-              {actionData?.errors?.password && (
-                <div className="pt-1 text-red-700" id="password-error">
-                  {actionData.errors.password}
-                </div>
-              )}
-            </div>
-          </div>
-
+    <Page maxWidth="sm">
+      <Typography variant="h3" component="h1" gutterBottom>
+        Sign up
+      </Typography>
+      <Stack direction="column" spacing={1} sx={{ pb: 2 }}>
+        <Typography variant="subtitle1">
+          Fill out the form to create an account.
+        </Typography>
+        <Alert variant="outlined" severity="info">
+          Your email address is used to verify your account and is never shared.
+        </Alert>
+      </Stack>
+      <Form method="post" noValidate>
+        <Stack direction="column" spacing={2}>
+          <TextField
+            label="Email address"
+            inputRef={emailRef}
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            autoFocus
+            error={!!actionData?.errors.email}
+            helperText={actionData?.errors.email}
+          />
+          <TextField
+            label="Username"
+            inputRef={usernameRef}
+            id="username"
+            name="username"
+            required
+            // error={!!actionData?.errors.email}
+            // helperText={actionData?.errors.email}
+          />
+          <TextField
+            label="Password"
+            inputRef={passwordRef}
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            required
+            error={!!actionData?.errors.password}
+            helperText={actionData?.errors.password}
+          />
+          <TextField
+            label="Confirm password"
+            inputRef={confirmPasswordRef}
+            id="confirm-password"
+            name="confirm-password"
+            type="password"
+            required
+            // error={!!actionData?.errors.password}
+            // helperText={actionData?.errors.password}
+          />
           <input type="hidden" name="redirectTo" value={redirectTo} />
-          <button
-            type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-          >
-            Create Account
-          </button>
-          <div className="flex items-center justify-center">
-            <div className="text-center text-sm text-gray-500">
+          <Button type="submit" variant="contained">
+            Create account
+          </Button>
+          <Box alignSelf="center">
+            <Typography variant="body2">
               Already have an account?{" "}
               <Link
-                className="text-blue-500 underline"
+                component={RemixLink}
                 to={{
                   pathname: "/login",
                   search: searchParams.toString(),
@@ -166,10 +181,10 @@ export default function Join() {
               >
                 Log in
               </Link>
-            </div>
-          </div>
-        </Form>
-      </div>
-    </div>
+            </Typography>
+          </Box>
+        </Stack>
+      </Form>
+    </Page>
   );
 }
