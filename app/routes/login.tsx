@@ -30,6 +30,13 @@ interface ActionData {
   };
 }
 
+function errorResponse(
+  errors: ActionData["errors"],
+  status: number = 400
+): Response {
+  return json<ActionData>({ errors }, { status });
+}
+
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const email = formData.get("email");
@@ -38,33 +45,19 @@ export const action: ActionFunction = async ({ request }) => {
   const remember = formData.get("remember");
 
   if (!validateEmail(email)) {
-    return json<ActionData>(
-      { errors: { email: "Email is invalid" } },
-      { status: 400 }
-    );
+    return errorResponse({ email: "Email is invalid" });
   }
 
   if (typeof password !== "string") {
-    return json<ActionData>(
-      { errors: { password: "Password is required" } },
-      { status: 400 }
-    );
+    return errorResponse({ password: "Password is required" });
   }
-
   if (password.length < 8) {
-    return json<ActionData>(
-      { errors: { password: "Password is too short" } },
-      { status: 400 }
-    );
+    return errorResponse({ password: "Password is too short" });
   }
 
   const user = await verifyLogin(email, password);
-
   if (!user) {
-    return json<ActionData>(
-      { errors: { email: "Invalid email or password" } },
-      { status: 400 }
-    );
+    return errorResponse({ email: "Invalid email or password" });
   }
 
   return createUserSession({

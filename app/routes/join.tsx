@@ -21,7 +21,11 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import Page from "~/components/Page";
-import { createUser, getUserByEmail } from "~/models/user.server";
+import {
+  createUser,
+  getUserByEmail,
+  getUserByUsername,
+} from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import { validateEmail } from "~/utils";
 
@@ -34,46 +38,77 @@ export const loader: LoaderFunction = async ({ request }) => {
 interface ActionData {
   errors: {
     email?: string;
+    username?: string;
     password?: string;
+    confirmPassword?: string;
   };
+}
+
+function errorResponse(
+  errors: ActionData["errors"],
+  status: number = 400
+): Response {
+  return json<ActionData>({ errors }, { status });
 }
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const email = formData.get("email");
+  const username = formData.get("username");
   const password = formData.get("password");
+  const confirmPassword = formData.get("confirm-password");
   const redirectTo = formData.get("redirectTo");
 
   if (!validateEmail(email)) {
-    return json<ActionData>(
-      { errors: { email: "Email is invalid" } },
-      { status: 400 }
-    );
+    return errorResponse({ email: "Email is invalid " });
+  }
+
+  if (typeof username !== "string") {
+    return errorResponse({ username: "Username is invalid" });
+  }
+  if (username.length < 4 || username.length > 16) {
+    return errorResponse({ username: "Username must be 4-16 characters long" });
+  }
+  if (!/^[a-z0-9_]*$/i.test(username)) {
+    return errorResponse({
+      username: "Username must contain only letters, numbers, and underscores",
+    });
+  }
+  if (username.startsWith("_")) {
+    return errorResponse({
+      username: "Username must start with a letter or number",
+    });
   }
 
   if (typeof password !== "string") {
-    return json<ActionData>(
-      { errors: { password: "Password is required" } },
-      { status: 400 }
-    );
+    return errorResponse({ password: "Password is required" });
+  }
+  if (password.length < 8 || password.length > 128) {
+    return errorResponse({ password: "Password is too short" });
+  }
+  if (!/^[!-~]*$/.test(password)) {
+    return errorResponse({ password: "Password contains invalid characters" });
   }
 
-  if (password.length < 8) {
-    return json<ActionData>(
-      { errors: { password: "Password is too short" } },
-      { status: 400 }
-    );
+  if (typeof confirmPassword !== "string") {
+    return errorResponse({ confirmPassword: "Confirm password is required" });
+  }
+  if (confirmPassword !== password) {
+    return errorResponse({ confirmPassword: "Passwords don't match" });
   }
 
-  const existingUser = await getUserByEmail(email);
+  let existingUser = await getUserByEmail(email);
   if (existingUser) {
-    return json<ActionData>(
-      { errors: { email: "A user already exists with this email" } },
-      { status: 400 }
-    );
+    return errorResponse({ email: "A user already exists with this email" });
+  }
+  existingUser = await getUserByUsername(username);
+  if (existingUser) {
+    return errorResponse({
+      username: "A user already exists with this username",
+    });
   }
 
-  const user = await createUser(email, password);
+  const user = await createUser(email, username, password);
 
   return createUserSession({
     request,
@@ -103,8 +138,12 @@ export default function Join(): JSX.Element {
   React.useEffect(() => {
     if (actionData?.errors.email) {
       emailRef.current?.focus();
+    } else if (actionData?.errors.username) {
+      usernameRef.current?.focus();
     } else if (actionData?.errors.password) {
       passwordRef.current?.focus();
+    } else if (actionData?.errors.confirmPassword) {
+      confirmPasswordRef.current?.focus();
     }
   }, [actionData]);
 
@@ -141,8 +180,8 @@ export default function Join(): JSX.Element {
             id="username"
             name="username"
             required
-            // error={!!actionData?.errors.email}
-            // helperText={actionData?.errors.email}
+            error={!!actionData?.errors.username}
+            helperText={actionData?.errors.username}
           />
           <TextField
             label="Password"
@@ -162,8 +201,8 @@ export default function Join(): JSX.Element {
             name="confirm-password"
             type="password"
             required
-            // error={!!actionData?.errors.password}
-            // helperText={actionData?.errors.password}
+            error={!!actionData?.errors.confirmPassword}
+            helperText={actionData?.errors.confirmPassword}
           />
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <Button type="submit" variant="contained">

@@ -12,7 +12,9 @@ export default function Page({
 }: Props): JSX.Element {
   return (
     <Container maxWidth={maxWidth}>
-      <Paper sx={{ px: 4, py: 3, my: 2 }}>{children}</Paper>
+      <Paper variant="outlined" sx={{ px: 4, py: 3, my: 2 }}>
+        {children}
+      </Paper>
     </Container>
   );
 }
