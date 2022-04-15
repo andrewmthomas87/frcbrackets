@@ -23,3 +23,31 @@ model Password {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique
 }
+
+model Team {
+  key        String @id
+  teamNumber Int    @unique
+  name       String
+
+  city      String
+  stateProv String
+  country   String
+
+  website    String?
+  rookieYear Int
+
+  division    Division? @relation(fields: [divisionKey], references: [key])
+  divisionKey String?
+}
+
+model Division {
+  key       String @id
+  name      String
+  eventCode String
+
+  startDate String
+  endDate   String
+  year      Int
+
+  teams Team[]
+}
