@@ -15,7 +15,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     where: { key: divisionKey },
   });
   if (!division) {
-    throw redirect("/data");
+    throw redirect("./");
   }
 
   const teams = await prisma.team.findMany({
