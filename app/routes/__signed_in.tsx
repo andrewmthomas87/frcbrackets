@@ -7,9 +7,9 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link as RemixLink, Outlet } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/server-runtime";
 import { requireUserId } from "~/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {

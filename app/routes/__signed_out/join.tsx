@@ -124,7 +124,7 @@ export const meta: MetaFunction = () => {
   };
 };
 
-export default function Join(): JSX.Element {
+export default function JoinPage(): JSX.Element {
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
