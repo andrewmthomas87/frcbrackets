@@ -1,4 +1,5 @@
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -18,26 +19,30 @@ export default function AboutTab(): JSX.Element {
         What follows are brief descriptions of each metric provided by Caleb
         Sykes.
       </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">Metric</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Includes</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {Object.entries(metrics).map(([key, metric]) => (
-            <TableRow key={key}>
-              <TableCell align="right">
-                <span style={{ color: theme.palette.primary.main }}>{key}</span>
-              </TableCell>
-              <TableCell>{metric.description}</TableCell>
-              <TableCell>{metric.includes}</TableCell>
+      <Box overflow="auto">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="right">Metric</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Includes</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {Object.entries(metrics).map(([key, metric]) => (
+              <TableRow key={key}>
+                <TableCell align="right">
+                  <b>{key}</b>
+                </TableCell>
+                <TableCell>{metric.description}</TableCell>
+                <TableCell>
+                  <i>{metric.includes}</i>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
     </>
   );
 }

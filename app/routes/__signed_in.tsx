@@ -1,10 +1,12 @@
 import {
   AppBar,
-  Box,
   Button,
+  Container,
   Link,
+  Stack,
   Toolbar,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import type { LoaderFunction } from "@remix-run/node";
@@ -19,6 +21,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function SignedInLayout(): JSX.Element {
   const theme = useTheme();
+  const isAtLeastMd = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <>
@@ -38,9 +41,38 @@ export default function SignedInLayout(): JSX.Element {
               </span>
             </Typography>
           </Link>
-          <Box flexGrow={1} />
+          <Container maxWidth="lg">
+            <Stack direction="row" spacing={2} sx={{ mx: 3 }}>
+              <Button
+                size={isAtLeastMd ? "medium" : "small"}
+                component={RemixLink}
+                to="/dashboard"
+              >
+                Dashboard
+              </Button>
+              <Button
+                size={isAtLeastMd ? "medium" : "small"}
+                component={RemixLink}
+                to="/brackets"
+              >
+                Brackets
+              </Button>
+              <Button
+                size={isAtLeastMd ? "medium" : "small"}
+                component={RemixLink}
+                to="/data"
+              >
+                Data
+              </Button>
+            </Stack>
+          </Container>
           <Form action="/logout" method="post">
-            <Button type="submit" color="secondary" variant="contained">
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              sx={{ whiteSpace: "nowrap" }}
+            >
               Log out
             </Button>
           </Form>

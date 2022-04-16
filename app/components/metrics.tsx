@@ -12,7 +12,7 @@ export const metrics: Record<
         metric of choice for a general estimate of a team's performance. Elo
         includes both Quals and Playoffs, but weights Playoffs less heavily. For
         more info on Elo, look at my Elo book here:{" "}
-        <Link href="https://github.com/inkling16/FRCElo">
+        <Link target="_blank" href="https://github.com/inkling16/FRCElo">
           https://github.com/inkling16/FRCElo
         </Link>
       </>
@@ -71,7 +71,10 @@ export const metrics: Record<
         the RP 50% of the time with neutral (0.0 ILS) partners. 3 robots that
         all have an ILS of 0.0 will get the RP about 11% of the time. See here
         for more information on ILSs:{" "}
-        <Link href="https://blog.thebluealliance.com/2019/08/04/making-better-rp-predictions/">
+        <Link
+          target="_blank"
+          href="https://blog.thebluealliance.com/2019/08/04/making-better-rp-predictions/"
+        >
           https://blog.thebluealliance.com/2019/08/04/making-better-rp-predictions/
         </Link>
       </>
@@ -87,7 +90,10 @@ export const metrics: Record<
         the RP 50% of the time with neutral (0.0 ILS) partners. 3 robots that
         all have an ILS of 0.0 will get the RP about 11% of the time. See here
         for more information on ILSs:{" "}
-        <Link href="https://blog.thebluealliance.com/2019/08/04/making-better-rp-predictions/">
+        <Link
+          target="_blank"
+          href="https://blog.thebluealliance.com/2019/08/04/making-better-rp-predictions/"
+        >
           https://blog.thebluealliance.com/2019/08/04/making-better-rp-predictions
         </Link>
         /

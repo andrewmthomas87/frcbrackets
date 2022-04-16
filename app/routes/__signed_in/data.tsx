@@ -46,7 +46,7 @@ export default function DataPage(): JSX.Element {
         </Link>
         .
       </Typography>
-      <Tabs value={divisionKey || "about"} sx={{ mb: 2 }}>
+      <Tabs variant="scrollable" value={divisionKey || "about"} sx={{ mb: 2 }}>
         <Tab value="about" label="About" component={RemixLink} to="" />
         {divisions.map((division) => (
           <Tab
