@@ -27,7 +27,11 @@ export default function SignedOutLayout(): JSX.Element {
 
   return (
     <>
-      <AppBar position="static" elevation={0}>
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{ bgcolor: theme.palette.background.default }}
+      >
         <Toolbar>
           <Link component={RemixLink} to="/" underline="hover">
             <Typography variant="h5" sx={{ fontWeight: 700 }}>

@@ -1,3 +1,4 @@
+import type { Team, TeamStats } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import invariant from "tiny-invariant";
 
@@ -57,6 +58,71 @@ function getClient() {
   client.$connect();
 
   return client;
+}
+
+export type TeamAndStats = Team & { stats: TeamStats };
+
+export async function teamsAndStatsByDivision(
+  divisionKey: string
+): Promise<TeamAndStats[]> {
+  const data = await prisma.team.findMany({
+    where: {
+      division: {
+        key: divisionKey,
+      },
+    },
+    include: {
+      stats: true,
+    },
+  });
+
+  return data.filter((value): value is TeamAndStats => !!value.stats);
+}
+
+export type SimpleTeamAndStats = Pick<Team, "key" | "teamNumber" | "name"> & {
+  stats: Pick<TeamStats, "winningMarginElo" | "unpenalizedTotalPoints">;
+};
+
+export async function simpleTeamsAndStatsByDivision(
+  divisionKey: string
+): Promise<SimpleTeamAndStats[]> {
+  const data = await prisma.team.findMany({
+    where: {
+      division: {
+        key: divisionKey,
+      },
+    },
+    select: {
+      key: true,
+      teamNumber: true,
+      name: true,
+      stats: {
+        select: {
+          winningMarginElo: true,
+          unpenalizedTotalPoints: true,
+        },
+      },
+    },
+  });
+
+  return data.filter((value): value is SimpleTeamAndStats => !!value.stats);
+}
+
+export type TeamKeyOnly = Pick<Team, "key">;
+
+export async function teamKeysOnlyByDivision(
+  divisionKey: string
+): Promise<TeamKeyOnly[]> {
+  return await prisma.team.findMany({
+    where: {
+      division: {
+        key: divisionKey,
+      },
+    },
+    select: {
+      key: true,
+    },
+  });
 }
 
 export { prisma };

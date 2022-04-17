@@ -25,7 +25,11 @@ export default function SignedInLayout(): JSX.Element {
 
   return (
     <>
-      <AppBar position="static" elevation={0}>
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{ bgcolor: theme.palette.background.default }}
+      >
         <Toolbar>
           <Link component={RemixLink} to="/dashboard" underline="hover">
             <Typography variant="h5" sx={{ fontWeight: 700 }}>
@@ -53,9 +57,9 @@ export default function SignedInLayout(): JSX.Element {
               <Button
                 size={isAtLeastMd ? "medium" : "small"}
                 component={RemixLink}
-                to="/brackets"
+                to="/predictions"
               >
-                Brackets
+                Predictions
               </Button>
               <Button
                 size={isAtLeastMd ? "medium" : "small"}

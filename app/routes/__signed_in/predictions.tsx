@@ -21,11 +21,11 @@ export const loader: LoaderFunction = async () => {
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Brackets - frcbrackets",
+    title: "Predictions - frcbrackets",
   };
 };
 
-export default function BracketsPage(): JSX.Element {
+export default function PredictionsPage(): JSX.Element {
   const divisions = useLoaderData<Division[]>();
 
   const matches = useMatches();
@@ -34,7 +34,7 @@ export default function BracketsPage(): JSX.Element {
   return (
     <Page maxWidth="lg">
       <Typography variant="h3" component="h1" gutterBottom>
-        Brackets
+        Predictions
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
         Your predictions for the 2022 FIRST Championship.
@@ -51,7 +51,7 @@ export default function BracketsPage(): JSX.Element {
           />
         ))}
       </Tabs>
-      <Outlet />
+      <Outlet key={divisionKey} />
     </Page>
   );
 }

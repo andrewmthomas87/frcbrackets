@@ -7,7 +7,7 @@ const theme = createTheme({
     secondary: { main: "#455a64" },
     background: {
       default: "#040512",
-      paper: "#040512",
+      paper: "#090b27",
     },
   },
   shadows: new Array(25).fill("none") as any,

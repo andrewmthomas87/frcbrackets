@@ -6,13 +6,10 @@ import {
   TableHead,
   TableRow,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { metrics } from "~/components/metrics";
 
 export default function AboutTab(): JSX.Element {
-  const theme = useTheme();
-
   return (
     <>
       <Typography variant="body1" gutterBottom>
