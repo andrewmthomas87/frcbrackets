@@ -8,11 +8,13 @@ import DivisionBracket from "~/components/predictions/DivisionBracket";
 import DivisionStats from "~/components/predictions/DivisionStats";
 import DivisionSubmit from "~/components/predictions/DivisionSubmit";
 import usePrediction from "~/components/predictions/usePrediction";
-import {
+import type {
   DivisionPredictionAndAlliances,
+  SimpleTeamAndStats,
+} from "~/db.server";
+import {
   divisionPredictionAndAlliances,
   prisma,
-  SimpleTeamAndStats,
   simpleTeamsAndStatsByDivision,
   teamKeysOnlyByDivision,
   upsertDivisionPrediction,

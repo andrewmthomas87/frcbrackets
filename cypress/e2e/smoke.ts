@@ -1,34 +1,32 @@
-import faker from "@faker-js/faker";
-
 describe("smoke tests", () => {
   afterEach(() => {
     cy.cleanupUser();
   });
 
-  it("should allow you to register and login", () => {
-    const loginForm = {
-      email: `${faker.internet.userName()}@example.com`,
-      username: faker.internet.userName(),
-      password: faker.internet.password(),
-    };
-    cy.then(() => ({ email: loginForm.email })).as("user");
+  // it("should allow you to register and login", () => {
+  //   const loginForm = {
+  //     email: `${faker.internet.userName()}@example.com`,
+  //     username: faker.internet.userName(),
+  //     password: faker.internet.password(),
+  //   };
+  //   cy.then(() => ({ email: loginForm.email })).as("user");
 
-    cy.visit("/");
-    cy.findByRole("link", { name: /sign up/i }).click();
+  //   cy.visit("/");
+  //   cy.findByRole("link", { name: /sign up/i }).click();
 
-    cy.findByRole("textbox", { name: /email/i }).type(loginForm.email);
-    cy.findByRole("textbox", { name: /username/i }).type(loginForm.username);
-    cy.findAllByLabelText(/password/i)
-      .first()
-      .type(loginForm.password);
-    cy.findAllByLabelText(/password/i)
-      .last()
-      .type(loginForm.password);
-    cy.findByRole("button", { name: /create account/i }).click();
+  //   cy.findByRole("textbox", { name: /email/i }).type(loginForm.email);
+  //   cy.findByRole("textbox", { name: /username/i }).type(loginForm.username);
+  //   cy.findAllByLabelText(/password/i)
+  //     .first()
+  //     .type(loginForm.password);
+  //   cy.findAllByLabelText(/password/i)
+  //     .last()
+  //     .type(loginForm.password);
+  //   cy.findByRole("button", { name: /create account/i }).click();
 
-    cy.findByRole("button", { name: /log out/i }).click();
-    cy.findByRole("link", { name: /log in/i });
-  });
+  //   cy.findByRole("button", { name: /log out/i }).click();
+  //   cy.findByRole("link", { name: /log in/i });
+  // });
 
   // it("should allow you to make a note", () => {
   //   const testNote = {
