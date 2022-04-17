@@ -1,5 +1,5 @@
 import { Box, Chip, Stack, Typography } from "@mui/material";
-import type { Alliance, UsePredictions } from "../usePredictions";
+import type { Alliance, UsePrediction } from "../usePrediction";
 import Matchup from "./Matchup";
 
 type Props = {
@@ -7,8 +7,8 @@ type Props = {
   alliances: Alliance[];
   results: number[];
 
-  lookupTeam: UsePredictions["lookupTeam"];
-  setResult: UsePredictions["setResult"];
+  lookupTeam: UsePrediction["lookupTeam"];
+  setResult: UsePrediction["setResult"];
 };
 
 export default function DivisionBracket({

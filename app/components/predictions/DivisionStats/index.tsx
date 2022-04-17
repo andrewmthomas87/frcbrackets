@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import type { UsePredictions } from "../usePredictions";
+import type { UsePrediction } from "../usePrediction";
 import MatchScoreInput from "./MatchScoreInput";
 import Question from "./Question";
 
@@ -8,8 +8,8 @@ type Props = {
   averageQualificationMatchScore: number;
   averagePlayoffMatchScore: number;
 
-  setAverageQualificationMatchScore: UsePredictions["setAverageQualificationMatchScore"];
-  setAveragePlayoffMatchScore: UsePredictions["setAveragePlayoffMatchScore"];
+  setAverageQualificationMatchScore: UsePrediction["setAverageQualificationMatchScore"];
+  setAveragePlayoffMatchScore: UsePrediction["setAveragePlayoffMatchScore"];
 };
 
 export default function DivisionStats({

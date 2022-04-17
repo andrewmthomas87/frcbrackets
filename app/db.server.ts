@@ -1,4 +1,9 @@
-import type { Team, TeamStats } from "@prisma/client";
+import type {
+  DivisionPrediction,
+  DivisionPredictionAlliance,
+  Team,
+  TeamStats,
+} from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import invariant from "tiny-invariant";
 
@@ -60,55 +65,65 @@ function getClient() {
   return client;
 }
 
-export type TeamAndStats = Team & { stats: TeamStats };
+export type TeamAndStats = Team & {
+  stats: TeamStats;
+};
 
 export async function teamsAndStatsByDivision(
   divisionKey: string
 ): Promise<TeamAndStats[]> {
-  const data = await prisma.team.findMany({
-    where: {
-      division: {
-        key: divisionKey,
+  return (
+    await prisma.team.findMany({
+      where: {
+        division: {
+          key: divisionKey,
+        },
       },
-    },
-    include: {
-      stats: true,
-    },
-  });
-
-  return data.filter((value): value is TeamAndStats => !!value.stats);
+      include: {
+        stats: true,
+      },
+    })
+  ).filter((team): team is TeamAndStats => !!team.stats);
 }
 
-export type SimpleTeamAndStats = Pick<Team, "key" | "teamNumber" | "name"> & {
-  stats: Pick<TeamStats, "winningMarginElo" | "unpenalizedTotalPoints">;
+export type SimpleTeamAndStats = {
+  key: string;
+  name: string;
+  stats: {
+    winningMarginElo: number;
+    unpenalizedTotalPoints: number;
+  };
+  teamNumber: number;
 };
 
 export async function simpleTeamsAndStatsByDivision(
   divisionKey: string
 ): Promise<SimpleTeamAndStats[]> {
-  const data = await prisma.team.findMany({
-    where: {
-      division: {
-        key: divisionKey,
-      },
-    },
-    select: {
-      key: true,
-      teamNumber: true,
-      name: true,
-      stats: {
-        select: {
-          winningMarginElo: true,
-          unpenalizedTotalPoints: true,
+  return (
+    await prisma.team.findMany({
+      where: {
+        division: {
+          key: divisionKey,
         },
       },
-    },
-  });
-
-  return data.filter((value): value is SimpleTeamAndStats => !!value.stats);
+      select: {
+        key: true,
+        teamNumber: true,
+        name: true,
+        stats: {
+          select: {
+            winningMarginElo: true,
+            unpenalizedTotalPoints: true,
+          },
+        },
+      },
+    })
+  ).filter((team): team is SimpleTeamAndStats => !!team.stats);
 }
 
-export type TeamKeyOnly = Pick<Team, "key">;
+export type TeamKeyOnly = {
+  key: string;
+};
 
 export async function teamKeysOnlyByDivision(
   divisionKey: string
@@ -121,6 +136,90 @@ export async function teamKeysOnlyByDivision(
     },
     select: {
       key: true,
+    },
+  });
+}
+
+export type DivisionPredictionAndAlliances =
+  | DivisionPrediction & {
+      alliances: (DivisionPredictionAlliance & {
+        captain: Team;
+        firstPick: Team;
+      })[];
+    };
+
+export async function divisionPredictionAndAlliances(
+  userID: string,
+  divisionKey: string
+): Promise<DivisionPredictionAndAlliances | null> {
+  return await prisma.divisionPrediction.findUnique({
+    where: {
+      userID_divisionKey: { userID, divisionKey },
+    },
+    include: {
+      alliances: {
+        include: {
+          captain: true,
+          firstPick: true,
+        },
+      },
+    },
+  });
+}
+
+export async function upsertDivisionPrediction(
+  userID: string,
+  divisionKey: string,
+  averageQualificationMatchScore: number,
+  averagePlayoffMatchScore: number,
+  alliances: [string, string][],
+  results: number[]
+): Promise<void> {
+  await prisma.divisionPrediction.upsert({
+    where: {
+      userID_divisionKey: { userID, divisionKey },
+    },
+    create: {
+      user: {
+        connect: {
+          id: userID,
+        },
+      },
+      division: {
+        connect: {
+          key: divisionKey,
+        },
+      },
+      averageQualificationMatchScore,
+      averagePlayoffMatchScore,
+      alliances: {
+        createMany: {
+          data: alliances.map((alliance, index) => ({
+            number: index + 1,
+            captainTeamKey: alliance[0],
+            firstPickTeamKey: alliance[1],
+          })),
+        },
+      },
+      results,
+    },
+    update: {
+      averageQualificationMatchScore,
+      averagePlayoffMatchScore,
+      alliances: {
+        updateMany: alliances.map((alliance, index) => ({
+          where: {
+            divisionPredictionUserID: userID,
+            divisionPredictionDivisionKey: divisionKey,
+            number: index + 1,
+          },
+          data: {
+            captainTeamKey: alliance[0],
+            firstPickTeamKey: alliance[1],
+          },
+        })),
+      },
+      results,
     },
   });
 }

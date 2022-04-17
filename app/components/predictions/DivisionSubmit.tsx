@@ -1,18 +1,18 @@
 import { LoadingButton } from "@mui/lab";
 import { Alert, Stack } from "@mui/material";
 import { Form } from "@remix-run/react";
-import type { Predictions } from "./usePredictions";
+import type { Prediction } from "./usePrediction";
 
 type Props = {
   isSubmitting: boolean;
   result: { error?: string } | undefined;
-  predictions: Predictions | null;
+  prediction: Prediction | null;
 };
 
 export default function DivisionSubmit({
   isSubmitting,
   result,
-  predictions,
+  prediction,
 }: Props): JSX.Element {
   return (
     <Stack direction="column" spacing={2} alignItems="flex-start">
@@ -28,16 +28,16 @@ export default function DivisionSubmit({
         ))}
       <Form method="post" replace>
         <input
-          name="predictions"
+          name="prediction"
           type="hidden"
           required
-          value={JSON.stringify(predictions)}
+          value={JSON.stringify(prediction)}
         />
         <LoadingButton
           type="submit"
           variant="contained"
           size="large"
-          disabled={!predictions}
+          disabled={!prediction}
           loading={isSubmitting}
         >
           Save predictions

@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import { useCallback } from "react";
 import type { SimpleTeamAndStats } from "~/db.server";
-import type { UsePredictions } from "../usePredictions";
+import type { UsePrediction } from "../usePrediction";
 import TeamCard from "./TeamCard";
 
 type Props = {
@@ -11,8 +11,8 @@ type Props = {
   teams: SimpleTeamAndStats[];
   filteredTeams: SimpleTeamAndStats[];
 
-  lookupTeam: UsePredictions["lookupTeam"];
-  setAllianceTeam: UsePredictions["setAllianceTeam"];
+  lookupTeam: UsePrediction["lookupTeam"];
+  setAllianceTeam: UsePrediction["setAllianceTeam"];
 };
 
 export default function AllianceSelect({

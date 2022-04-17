@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
 import type { SimpleTeamAndStats } from "~/db.server";
-import type { Alliance, UsePredictions } from "../usePredictions";
+import type { Alliance, UsePrediction } from "../usePrediction";
 import AllianceSelect from "./AllianceSelect";
 
 type Props = {
@@ -9,8 +9,8 @@ type Props = {
   sortedTeams: SimpleTeamAndStats[];
   alliances: Alliance[];
 
-  lookupTeam: UsePredictions["lookupTeam"];
-  setAllianceTeam: UsePredictions["setAllianceTeam"];
+  lookupTeam: UsePrediction["lookupTeam"];
+  setAllianceTeam: UsePrediction["setAllianceTeam"];
 };
 
 export default function DivisionAlliances({

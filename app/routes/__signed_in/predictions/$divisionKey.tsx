@@ -7,15 +7,19 @@ import DivisionAlliances from "~/components/predictions/DivisionAlliances";
 import DivisionBracket from "~/components/predictions/DivisionBracket";
 import DivisionStats from "~/components/predictions/DivisionStats";
 import DivisionSubmit from "~/components/predictions/DivisionSubmit";
-import usePredictions from "~/components/predictions/usePredictions";
-import type { SimpleTeamAndStats } from "~/db.server";
+import usePrediction from "~/components/predictions/usePrediction";
 import {
+  DivisionPredictionAndAlliances,
+  divisionPredictionAndAlliances,
   prisma,
+  SimpleTeamAndStats,
   simpleTeamsAndStatsByDivision,
   teamKeysOnlyByDivision,
+  upsertDivisionPrediction,
 } from "~/db.server";
+import { requireUserId } from "~/session.server";
 
-type PredictionsData = {
+type PredictionData = {
   averageQualificationMatchScore: number;
   averagePlayoffMatchScore: number;
   alliances: [string, string][];
@@ -42,7 +46,7 @@ function isResults(results: any): results is number[] {
   );
 }
 
-function isPredictionsData(data: any): data is PredictionsData {
+function isPredictionData(data: any): data is PredictionData {
   if (data === null || typeof data !== "object") {
     return false;
   }
@@ -82,10 +86,10 @@ function isPredictionsData(data: any): data is PredictionsData {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const formData = await request.formData();
-  const predictions: any = JSON.parse(
-    (formData.get("predictions") as string | null) || ""
+  const prediction: any = JSON.parse(
+    (formData.get("prediction") as string | null) || ""
   );
-  if (!isPredictionsData(predictions)) {
+  if (!isPredictionData(prediction)) {
     return json({ error: "Invalid predictions" });
   }
 
@@ -93,7 +97,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const validTeamKeys = new Set(
     (await teamKeysOnlyByDivision(divisionKey)).map((team) => team.key)
   );
-  const invalidIndex = predictions.alliances
+  const invalidIndex = prediction.alliances
     .flat()
     .findIndex((teamKey) => !validTeamKeys.has(teamKey));
   if (invalidIndex > -1) {
@@ -101,10 +105,20 @@ export const action: ActionFunction = async ({ request, params }) => {
   }
 
   // Ensure unique
-  const teamKeysSet = new Set(predictions.alliances.flat());
+  const teamKeysSet = new Set(prediction.alliances.flat());
   if (teamKeysSet.size !== 16) {
     return json({ error: "Invalid predictions" });
   }
+
+  const userID = await requireUserId(request);
+  await upsertDivisionPrediction(
+    userID,
+    divisionKey,
+    prediction.averageQualificationMatchScore,
+    prediction.averagePlayoffMatchScore,
+    prediction.alliances,
+    prediction.results
+  );
 
   return json({});
 };
@@ -112,11 +126,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 type LoaderDataType = {
   division: Division;
   teams: SimpleTeamAndStats[];
+  prediction: DivisionPredictionAndAlliances | null;
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const divisionKey = params["divisionKey"]!;
-
   const division = await prisma.division.findUnique({
     where: { key: divisionKey },
   });
@@ -126,11 +140,18 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const teams = await simpleTeamsAndStatsByDivision(division.key);
 
-  return json<LoaderDataType>({ division, teams });
+  const userID = await requireUserId(request);
+  const prediction = await divisionPredictionAndAlliances(userID, division.key);
+
+  return json<LoaderDataType>({ division, teams, prediction });
 };
 
 export default function DivisionTab(): JSX.Element {
-  const { division, teams } = useLoaderData<LoaderDataType>();
+  const {
+    division,
+    teams,
+    prediction: initialPrediction,
+  } = useLoaderData<LoaderDataType>();
   const actionData = useActionData<{ error?: string }>();
   const { state } = useTransition();
 
@@ -140,13 +161,13 @@ export default function DivisionTab(): JSX.Element {
     averagePlayoffMatchScore,
     alliances,
     results,
-    predictions,
+    prediction,
     lookupTeam,
     setAverageQualificationMatchScore,
     setAveragePlayoffMatchScore,
     setAllianceTeam,
     setResult,
-  } = usePredictions(teams);
+  } = usePrediction(teams, initialPrediction);
 
   const isSubmitting = state === "submitting";
 
@@ -179,7 +200,7 @@ export default function DivisionTab(): JSX.Element {
       <DivisionSubmit
         isSubmitting={isSubmitting}
         result={actionData}
-        predictions={predictions}
+        prediction={prediction}
       />
     </Stack>
   );

@@ -15,7 +15,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password Password?
+  password            Password?
+  divisionPredictions DivisionPrediction[]
 }
 
 model Password {
@@ -41,6 +42,9 @@ model Team {
   divisionKey String?
 
   stats TeamStats?
+
+  divisionPredictionAllianceCaptains   DivisionPredictionAlliance[] @relation(name: "captains")
+  divisionPredictionAllianceFirstPicks DivisionPredictionAlliance[] @relation(name: "firstPicks")
 }
 
 model Division {
@@ -52,7 +56,8 @@ model Division {
   endDate   String
   year      Int
 
-  teams Team[]
+  teams               Team[]
+  divisionPredictions DivisionPrediction[]
 }
 
 model TeamStats {
@@ -120,4 +125,36 @@ model TeamStats {
   foulsDrawn                      Float
   techFoulsDrawn                  Float
   foulPointsDrawn                 Float
+}
+
+model DivisionPredictionAlliance {
+  divisionPrediction            DivisionPrediction @relation(fields: [divisionPredictionUserID, divisionPredictionDivisionKey], references: [userID, divisionKey])
+  divisionPredictionUserID      String
+  divisionPredictionDivisionKey String
+
+  number Int
+
+  captain          Team   @relation(name: "captains", fields: [captainTeamKey], references: [key])
+  captainTeamKey   String
+  firstPick        Team   @relation(name: "firstPicks", fields: [firstPickTeamKey], references: [key])
+  firstPickTeamKey String
+
+  @@id([divisionPredictionUserID, divisionPredictionDivisionKey, number])
+}
+
+model DivisionPrediction {
+  user   User   @relation(fields: [userID], references: [id])
+  userID String
+
+  division    Division @relation(fields: [divisionKey], references: [key])
+  divisionKey String
+
+  averageQualificationMatchScore Int
+  averagePlayoffMatchScore       Int
+
+  alliances DivisionPredictionAlliance[]
+
+  results Int[]
+
+  @@id([userID, divisionKey])
 }

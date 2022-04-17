@@ -1,19 +1,25 @@
 import produce from "immer";
 import { useCallback, useMemo, useState } from "react";
-import type { SimpleTeamAndStats } from "~/db.server";
+import type {
+  DivisionPredictionAndAlliances,
+  SimpleTeamAndStats,
+} from "~/db.server";
 
 export type Alliance = [string | null, string | null];
 
-export type Predictions = {
+export type Prediction = {
   averageQualificationMatchScore: number;
   averagePlayoffMatchScore: number;
   alliances: [string, string][];
   results: number[];
 };
 
-export type UsePredictions = ReturnType<typeof usePredictions>;
+export type UsePrediction = ReturnType<typeof usePrediction>;
 
-export default function usePredictions(teams: SimpleTeamAndStats[]) {
+export default function usePrediction(
+  teams: SimpleTeamAndStats[],
+  initialPrediction: DivisionPredictionAndAlliances | null
+) {
   const teamsMap = useMemo(
     () => Object.fromEntries(teams.map((team) => [team.key, team])),
     [teams]
@@ -27,16 +33,27 @@ export default function usePredictions(teams: SimpleTeamAndStats[]) {
   }, [teams]);
 
   const [averageQualificationMatchScore, setAverageQualificationMatchScore] =
-    useState(NaN);
-  const [averagePlayoffMatchScore, setAveragePlayoffMatchScore] = useState(NaN);
-
-  const [alliances, setAlliances] = useState<Alliance[]>(() =>
-    new Array(8).fill([null, null])
+    useState(
+      initialPrediction ? initialPrediction.averageQualificationMatchScore : NaN
+    );
+  const [averagePlayoffMatchScore, setAveragePlayoffMatchScore] = useState(
+    initialPrediction ? initialPrediction.averagePlayoffMatchScore : NaN
   );
 
-  const [results, setResults] = useState<number[]>(new Array(7).fill(0));
+  const [alliances, setAlliances] = useState<Alliance[]>(() =>
+    initialPrediction
+      ? initialPrediction.alliances.map((alliance) => [
+          alliance.captain.key,
+          alliance.firstPick.key,
+        ])
+      : new Array(8).fill([null, null])
+  );
 
-  const predictions = useMemo<Predictions | null>(() => {
+  const [results, setResults] = useState<number[]>(() =>
+    initialPrediction ? initialPrediction.results : new Array(7).fill(0)
+  );
+
+  const prediction = useMemo<Prediction | null>(() => {
     if (isNaN(averageQualificationMatchScore)) {
       return null;
     } else if (isNaN(averagePlayoffMatchScore)) {
@@ -113,7 +130,7 @@ export default function usePredictions(teams: SimpleTeamAndStats[]) {
     averagePlayoffMatchScore,
     alliances,
     results,
-    predictions,
+    prediction,
 
     lookupTeam,
     setAverageQualificationMatchScore,

@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { useCallback } from "react";
-import type { Alliance, UsePredictions } from "../usePredictions";
+import type { Alliance, UsePrediction } from "../usePrediction";
 import AllianceCard from "./AllianceCard";
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
   };
   selected: number;
 
-  lookupTeam: UsePredictions["lookupTeam"];
+  lookupTeam: UsePrediction["lookupTeam"];
   onSelect(alliance: number): void;
 };
 

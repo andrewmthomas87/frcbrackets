@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useMemo } from "react";
-import type { Alliance, UsePredictions } from "../usePredictions";
+import type { Alliance, UsePrediction } from "../usePrediction";
 
 type Props = {
   isDisabled: boolean;
@@ -18,7 +18,7 @@ type Props = {
   };
   isSelected: boolean | null;
 
-  lookupTeam: UsePredictions["lookupTeam"];
+  lookupTeam: UsePrediction["lookupTeam"];
   onSelect(): void;
 };
 
