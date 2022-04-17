@@ -13,19 +13,19 @@ export default function Page({
   return (
     <>
       <Container maxWidth={maxWidth} sx={{ mb: 3 }}>
-        <Paper variant="outlined" sx={{ px: 4, py: 3, my: 2 }}>
+        <Paper variant="outlined" sx={{ px: [2, 4], py: [2, 3], my: 2 }}>
           {children}
         </Paper>
       </Container>
       <Container maxWidth={maxWidth} component="footer">
-        <Stack direction="column" p={2} alignItems="center">
-          <Typography variant="caption">
+        <Stack direction="column" p={2}>
+          <Typography variant="caption" textAlign="center">
             &copy; 2022{" "}
             <Link target="_blank" href="https://andrewt.io">
               Andrew Thomas
             </Link>
           </Typography>
-          <Typography variant="caption">
+          <Typography variant="caption" textAlign="center">
             Powered by{" "}
             <Link target="_blank" href="https://www.thebluealliance.com">
               The Blue Alliance

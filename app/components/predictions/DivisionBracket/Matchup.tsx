@@ -40,7 +40,7 @@ export default function Matchup({
       <Typography variant="subtitle1" fontWeight="bold">
         {n}.
       </Typography>
-      <Stack direction="row" spacing={2} alignItems="center">
+      <Stack direction={["column", "row"]} spacing={[2, 2]} alignItems="center">
         <AllianceCard
           isDisabled={isDisabled}
           isRed={true}

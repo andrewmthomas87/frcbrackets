@@ -28,9 +28,9 @@ export default function SignedInLayout(): JSX.Element {
       <AppBar
         position="static"
         elevation={0}
-        sx={{ bgcolor: theme.palette.background.default }}
+        sx={{ bgcolor: theme.palette.background.default, overflow: "auto" }}
       >
-        <Toolbar>
+        <Toolbar variant={isAtLeastMd ? "regular" : "dense"}>
           <Link component={RemixLink} to="/dashboard" underline="hover">
             <Typography variant="h5" sx={{ fontWeight: 700 }}>
               <span style={{ color: theme.palette.primary.light }}>frc</span>
