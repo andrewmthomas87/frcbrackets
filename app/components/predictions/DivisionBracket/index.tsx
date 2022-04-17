@@ -41,7 +41,12 @@ export default function DivisionBracket({
         Predict how the alliances you chose will fare in playoffs.
       </Typography>
       <Stack direction="column" spacing={3} py={1}>
-        <Stack direction="column" spacing={2} alignItems="flex-start">
+        <Stack
+          direction="column"
+          spacing={2}
+          alignItems="flex-start"
+          overflow="auto"
+        >
           <Chip variant="outlined" label="Quarterfinals" />
           {quarterfinals.map(([red, blue], index) => (
             <Matchup
@@ -62,7 +67,12 @@ export default function DivisionBracket({
             />
           ))}
         </Stack>
-        <Stack direction="column" spacing={2} alignItems="flex-start">
+        <Stack
+          direction="column"
+          spacing={2}
+          alignItems="flex-start"
+          overflow="auto"
+        >
           <Chip variant="outlined" label="Semifinals" />
           {shouldShowSemis ? (
             [0, 0].map((_, index) => (
@@ -87,7 +97,12 @@ export default function DivisionBracket({
             <Typography variant="body2">Quarterfinals unfinished</Typography>
           )}
         </Stack>
-        <Stack direction="column" spacing={2} alignItems="flex-start">
+        <Stack
+          direction="column"
+          spacing={2}
+          alignItems="flex-start"
+          overflow="auto"
+        >
           <Chip variant="outlined" label="Final" />
           {shouldShowFinals ? (
             <Matchup

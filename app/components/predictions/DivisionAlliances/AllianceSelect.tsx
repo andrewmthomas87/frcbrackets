@@ -37,7 +37,7 @@ export default function AllianceSelect({
       <Typography variant="subtitle1" fontWeight="bold">
         {n}.
       </Typography>
-      <Stack direction={["column", "row"]} spacing={[2, 2]}>
+      <Stack direction="row" spacing={2}>
         <TeamCard
           isDisabled={isDisabled}
           isCaptain={true}

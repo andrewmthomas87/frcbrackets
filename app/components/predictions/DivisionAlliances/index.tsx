@@ -37,7 +37,7 @@ export default function DivisionAlliances({
       <Typography variant="body1" gutterBottom>
         Predict the alliance captain and first pick of each alliance.
       </Typography>
-      <Stack direction="column" spacing={2} py={1}>
+      <Stack direction="column" spacing={2} py={1} overflow="auto">
         {alliances.map((alliance, index) => (
           <AllianceSelect
             key={index}
