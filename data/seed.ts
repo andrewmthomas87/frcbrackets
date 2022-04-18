@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import "dotenv/config";
+import { prisma } from "~/db.server";
 import { TBA } from "./api";
-
-const prisma = new PrismaClient();
 
 async function seedTeams() {
   let teams: TBA.Team[] = [];
@@ -25,43 +23,54 @@ async function seedTeams() {
     );
   }
 
-  await prisma.$transaction(
-    teams.map(
-      ({
-        key,
-        city,
-        country,
-        name,
-        nickname,
-        rookie_year: rookieYear,
-        state_prov: stateProv,
-        team_number: teamNumber,
-        website,
-      }) =>
-        prisma.team.upsert({
-          where: { key },
-          update: {
-            city,
-            country,
-            name: nickname || name,
-            rookieYear,
-            stateProv,
-            website,
-          },
-          create: {
-            city,
-            country,
-            key,
-            name: nickname || name,
-            rookieYear,
-            stateProv,
-            teamNumber,
-            website,
-          },
-          select: { key: true },
-        })
-    )
-  );
+  console.log("Fetched teams...");
+
+  console.log("Inserted batch");
+
+  let i = 0;
+  while (teams.length > 0) {
+    console.log(++i);
+
+    const batch = teams.slice(0, 10);
+    await Promise.all(
+      batch.map(
+        ({
+          key,
+          city,
+          country,
+          name,
+          nickname,
+          rookie_year: rookieYear,
+          state_prov: stateProv,
+          team_number: teamNumber,
+          website,
+        }) =>
+          prisma.team.upsert({
+            where: { key },
+            update: {
+              city,
+              country,
+              name: nickname || name,
+              rookieYear,
+              stateProv,
+              website,
+            },
+            create: {
+              city,
+              country,
+              key,
+              name: nickname || name,
+              rookieYear,
+              stateProv,
+              teamNumber,
+              website,
+            },
+            select: { key: true },
+          })
+      )
+    );
+    teams = teams.slice(10);
+  }
 
   console.log(`Database has been seeded with teams. 🌱`);
 }
@@ -69,6 +78,8 @@ async function seedTeams() {
 async function seedDivisions() {
   const events = await TBA.eventsSimple(parseInt(process.env.TBA_YEAR!));
   const divisions = events.filter((event) => event.event_type === 3);
+
+  console.log("Fetched divisions...");
 
   await prisma.$transaction(
     divisions.map((division) =>
@@ -93,6 +104,8 @@ async function seedDivisionTeams() {
   const teamKeys = await Promise.all(
     divisions.map((division) => TBA.eventTeamKeys(division.key))
   );
+
+  console.log("Fetched division teams...");
 
   await prisma.$transaction(
     divisions.flatMap((division, i) =>

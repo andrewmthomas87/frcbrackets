@@ -161,26 +161,38 @@ async function main() {
       trim: true,
     });
 
-    const rows: Row[] = [];
+    let rows: Row[] = [];
     for await (const record of parser) {
       rows.push(parseRow(record));
     }
 
-    await prisma.$transaction(
-      rows.map((row) =>
-        prisma.teamStats.create({
-          data: {
-            ...row,
-            teamNumber: undefined,
-            team: {
-              connect: {
-                teamNumber: row.teamNumber,
+    console.log("Parsed data...");
+
+    console.log("Inserted batch");
+
+    let i = 0;
+    while (rows.length > 0) {
+      console.log(++i);
+
+      const batch = rows.slice(0, 10);
+      await Promise.all(
+        batch.map((row) =>
+          prisma.teamStats.create({
+            data: {
+              ...row,
+              teamNumber: undefined,
+              team: {
+                connect: {
+                  teamNumber: row.teamNumber,
+                },
               },
             },
-          },
-        })
-      )
-    );
+          })
+        )
+      );
+
+      rows = rows.slice(10);
+    }
 
     console.log(`Team stats have been imported into the database. 🌱`);
   } catch (e) {
