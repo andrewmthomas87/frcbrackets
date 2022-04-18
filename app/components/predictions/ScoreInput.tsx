@@ -3,13 +3,15 @@ import type { ChangeEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
 
 type Props = {
+  label: string;
   value: number;
   isDisabled: boolean;
 
   onSetValue(value: number): void;
 };
 
-export default function MatchScoreInput({
+export default function ScoreInput({
+  label,
   value,
   isDisabled,
 
@@ -47,7 +49,7 @@ export default function MatchScoreInput({
   return (
     <TextField
       size="small"
-      label="Match Score"
+      label={label}
       inputMode="numeric"
       value={valueStr}
       disabled={isDisabled}

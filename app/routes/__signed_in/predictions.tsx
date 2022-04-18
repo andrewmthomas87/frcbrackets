@@ -29,7 +29,15 @@ export default function PredictionsPage(): JSX.Element {
   const divisions = useLoaderData<Division[]>();
 
   const matches = useMatches();
+  let tab: string;
   const divisionKey = matches[matches.length - 1].params["divisionKey"];
+  if (divisionKey) {
+    tab = divisionKey;
+  } else if (matches[matches.length - 1].pathname.endsWith("einstein")) {
+    tab = "einstein";
+  } else {
+    tab = "about";
+  }
 
   return (
     <Page maxWidth="lg">
@@ -39,7 +47,7 @@ export default function PredictionsPage(): JSX.Element {
       <Typography variant="subtitle1" gutterBottom>
         Your predictions for the 2022 FIRST Championship.
       </Typography>
-      <Tabs variant="scrollable" value={divisionKey || "about"} sx={{ mb: 2 }}>
+      <Tabs variant="scrollable" value={tab} sx={{ mb: 2 }}>
         <Tab value="about" label="About" component={RemixLink} to="" />
         {divisions.map((division) => (
           <Tab
@@ -50,8 +58,14 @@ export default function PredictionsPage(): JSX.Element {
             to={division.key}
           />
         ))}
+        <Tab
+          value="einstein"
+          label="Einstein"
+          component={RemixLink}
+          to="einstein"
+        />
       </Tabs>
-      <Outlet key={divisionKey} />
+      <Outlet key={tab} />
     </Page>
   );
 }

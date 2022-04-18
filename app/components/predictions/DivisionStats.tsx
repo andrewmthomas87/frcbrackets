@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
-import type { UsePrediction } from "../usePrediction";
-import MatchScoreInput from "./MatchScoreInput";
 import Question from "./Question";
+import ScoreInput from "./ScoreInput";
+import type { UsePrediction } from "./usePrediction";
 
 type Props = {
   isDisabled: boolean;
@@ -37,7 +37,8 @@ export default function DivisionStats({
             </>
           }
           input={
-            <MatchScoreInput
+            <ScoreInput
+              label="Match score"
               value={averageQualificationMatchScore}
               isDisabled={isDisabled}
               onSetValue={setAverageQualificationMatchScore}
@@ -53,7 +54,8 @@ export default function DivisionStats({
             </>
           }
           input={
-            <MatchScoreInput
+            <ScoreInput
+              label="Match score"
               value={averagePlayoffMatchScore}
               isDisabled={isDisabled}
               onSetValue={setAveragePlayoffMatchScore}

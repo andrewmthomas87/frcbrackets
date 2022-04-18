@@ -50,7 +50,7 @@ export default function DivisionBracket({
           <Chip variant="outlined" label="Quarterfinals" />
           {quarterfinals.map(([red, blue], index) => (
             <Matchup
-              key={index + 1}
+              key={index}
               isDisabled={isDisabled}
               n={index + 1}
               red={{
