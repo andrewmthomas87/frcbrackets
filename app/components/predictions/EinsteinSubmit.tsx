@@ -1,12 +1,12 @@
 import { LoadingButton } from "@mui/lab";
 import { Alert, Stack } from "@mui/material";
 import { Form } from "@remix-run/react";
-import type { EinsteinPrediction } from "./useEinsteinPrediction";
+import type { Prediction } from "./useEinsteinPrediction";
 
 type Props = {
   isSubmitting: boolean;
   result: { error?: string } | undefined;
-  prediction: EinsteinPrediction | null;
+  prediction: Prediction | null;
 };
 
 export default function EinsteinSubmit({

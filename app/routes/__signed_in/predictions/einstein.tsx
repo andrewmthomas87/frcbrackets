@@ -1,27 +1,148 @@
 import { Divider, Stack, Typography } from "@mui/material";
 import type { Division } from "@prisma/client";
-import type { LoaderFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useActionData, useLoaderData, useTransition } from "@remix-run/react";
 import EinsteinFinals from "~/components/predictions/EinsteinFinals";
 import EinsteinRoundRobin from "~/components/predictions/EinsteinRoundRobin.tsx";
 import EinsteinStats from "~/components/predictions/EinsteinStats";
 import EinsteinSubmit from "~/components/predictions/EinsteinSubmit";
+import type { Prediction } from "~/components/predictions/useEinsteinPrediction";
 import useEinsteinPrediction from "~/components/predictions/useEinsteinPrediction";
-import { prisma } from "~/db.server";
+import type { EinsteinPredictionAndDivisions } from "~/db.server";
+import {
+  divisionKeys,
+  einsteinPredictionAndDivisions,
+  prisma,
+  upsertEinsteinPrediction,
+} from "~/db.server";
+import { requireUserId } from "~/session.server";
+
+function isResults(results: any): results is string[] {
+  return (
+    Array.isArray(results) &&
+    results.filter(
+      (divisionKey) => typeof divisionKey === "string" && !!divisionKey
+    ).length === 15
+  );
+}
+
+function isPrediction(data: any): data is Prediction {
+  if (data === null || typeof data !== "object") {
+    return false;
+  }
+
+  const {
+    averageRRAllianceHangarPoints,
+    averageFinalsMatchScore,
+    results,
+    firstSeed,
+    secondSeed,
+    winner,
+  } = data;
+
+  if (
+    typeof averageRRAllianceHangarPoints !== "number" ||
+    averageRRAllianceHangarPoints < 0 ||
+    averageRRAllianceHangarPoints > 500
+  ) {
+    return false;
+  }
+  if (
+    typeof averageFinalsMatchScore !== "number" ||
+    averageFinalsMatchScore < 0 ||
+    averageFinalsMatchScore > 500
+  ) {
+    return false;
+  }
+
+  if (!isResults(results)) {
+    return false;
+  }
+
+  if (
+    !(
+      typeof firstSeed === "string" &&
+      firstSeed &&
+      typeof secondSeed === "string" &&
+      secondSeed &&
+      typeof winner === "string" &&
+      winner
+    )
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+export const action: ActionFunction = async ({ request, params }) => {
+  const formData = await request.formData();
+  const prediction: any = JSON.parse(
+    (formData.get("prediction") as string | null) || ""
+  );
+  if (!isPrediction(prediction)) {
+    return json({ error: "Invalid predictions" });
+  }
+
+  const validDivisionKeys = new Set(
+    (await divisionKeys()).map((division) => division.key)
+  );
+  const invalidIndex = prediction.results.findIndex(
+    (divisionKey) => !validDivisionKeys.has(divisionKey)
+  );
+  if (invalidIndex > -1) {
+    return json({ error: "Invalid predictions" });
+  }
+
+  if (
+    !(
+      validDivisionKeys.has(prediction.firstSeed) &&
+      validDivisionKeys.has(prediction.secondSeed) &&
+      validDivisionKeys.has(prediction.winner)
+    )
+  ) {
+    return json({ error: "Invalid predictions" });
+  } else if (
+    !(
+      prediction.winner === prediction.firstSeed ||
+      prediction.winner === prediction.secondSeed
+    )
+  ) {
+    return json({ error: "Invalid predictions" });
+  }
+
+  const userID = await requireUserId(request);
+  await upsertEinsteinPrediction(
+    userID,
+    prediction.averageRRAllianceHangarPoints,
+    prediction.averageFinalsMatchScore,
+    prediction.results,
+    prediction.firstSeed,
+    prediction.secondSeed,
+    prediction.winner
+  );
+
+  return json({});
+};
 
 type LoaderDataType = {
   divisions: Division[];
+  prediction: EinsteinPredictionAndDivisions | null;
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const divisions = await prisma.division.findMany();
 
-  return json<LoaderDataType>({ divisions });
+  const userID = await requireUserId(request);
+  const prediction = await einsteinPredictionAndDivisions(userID);
+
+  return json<LoaderDataType>({ divisions, prediction });
 };
 
 export default function EinsteinTab(): JSX.Element {
-  const { divisions } = useLoaderData<LoaderDataType>();
+  const { divisions, prediction: initialPrediction } =
+    useLoaderData<LoaderDataType>();
   const actionData = useActionData<{ error?: string }>();
   const { state } = useTransition();
 
@@ -40,7 +161,7 @@ export default function EinsteinTab(): JSX.Element {
     setFirstSeed,
     setSecondSeed,
     setWinner,
-  } = useEinsteinPrediction(divisions);
+  } = useEinsteinPrediction(divisions, initialPrediction);
 
   const isSubmitting = state === "submitting";
 

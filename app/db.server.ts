@@ -1,6 +1,8 @@
 import type {
+  Division,
   DivisionPrediction,
   DivisionPredictionAlliance,
+  EinsteinPrediction,
   Team,
   TeamStats,
 } from "@prisma/client";
@@ -220,6 +222,82 @@ export async function upsertDivisionPrediction(
         })),
       },
       results,
+    },
+  });
+}
+
+export type DivisionKeyOnly = {
+  key: string;
+};
+
+export async function divisionKeys(): Promise<DivisionKeyOnly[]> {
+  return await prisma.division.findMany({
+    select: {
+      key: true,
+    },
+  });
+}
+
+export type EinsteinPredictionAndDivisions = EinsteinPrediction & {
+  firstSeed: Division;
+  secondSeed: Division;
+  winner: Division;
+};
+
+export async function einsteinPredictionAndDivisions(
+  userID: string
+): Promise<EinsteinPredictionAndDivisions | null> {
+  return await prisma.einsteinPrediction.findUnique({
+    where: { userID },
+    include: {
+      firstSeed: true,
+      secondSeed: true,
+      winner: true,
+    },
+  });
+}
+
+export async function upsertEinsteinPrediction(
+  userID: string,
+  averageRRAllianceHangarPoints: number,
+  averageFinalsMatchScore: number,
+  results: string[],
+  firstSeedDivisionKey: string,
+  secondSeedDivisionKey: string,
+  winnerDivisionKey: string
+): Promise<void> {
+  await prisma.einsteinPrediction.upsert({
+    where: { userID },
+    create: {
+      user: {
+        connect: { id: userID },
+      },
+      averageRRAllianceHangarPoints,
+      averageFinalsMatchScore,
+      results,
+      firstSeed: {
+        connect: { key: firstSeedDivisionKey },
+      },
+      secondSeed: {
+        connect: { key: secondSeedDivisionKey },
+      },
+      winner: {
+        connect: { key: winnerDivisionKey },
+      },
+    },
+    update: {
+      averageRRAllianceHangarPoints,
+      averageFinalsMatchScore,
+      results,
+      firstSeed: {
+        connect: { key: firstSeedDivisionKey },
+      },
+      secondSeed: {
+        connect: { key: secondSeedDivisionKey },
+      },
+      winner: {
+        connect: { key: winnerDivisionKey },
+      },
     },
   });
 }

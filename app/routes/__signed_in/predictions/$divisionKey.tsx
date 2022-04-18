@@ -7,6 +7,7 @@ import DivisionAlliances from "~/components/predictions/DivisionAlliances";
 import DivisionBracket from "~/components/predictions/DivisionBracket";
 import DivisionStats from "~/components/predictions/DivisionStats";
 import DivisionSubmit from "~/components/predictions/DivisionSubmit";
+import type { Prediction } from "~/components/predictions/usePrediction";
 import usePrediction from "~/components/predictions/usePrediction";
 import type {
   DivisionPredictionAndAlliances,
@@ -20,13 +21,6 @@ import {
   upsertDivisionPrediction,
 } from "~/db.server";
 import { requireUserId } from "~/session.server";
-
-type PredictionData = {
-  averageQualificationMatchScore: number;
-  averagePlayoffMatchScore: number;
-  alliances: [string, string][];
-  results: number[];
-};
 
 function isAlliances(alliances: any): alliances is [string, string][] {
   return (
@@ -48,7 +42,7 @@ function isResults(results: any): results is number[] {
   );
 }
 
-function isPredictionData(data: any): data is PredictionData {
+function isPrediction(data: any): data is Prediction {
   if (data === null || typeof data !== "object") {
     return false;
   }
@@ -91,7 +85,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const prediction: any = JSON.parse(
     (formData.get("prediction") as string | null) || ""
   );
-  if (!isPredictionData(prediction)) {
+  if (!isPrediction(prediction)) {
     return json({ error: "Invalid predictions" });
   }
 

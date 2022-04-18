@@ -1,8 +1,9 @@
 import type { Division } from "@prisma/client";
 import produce from "immer";
 import { useCallback, useMemo, useState } from "react";
+import type { EinsteinPredictionAndDivisions } from "~/db.server";
 
-export type EinsteinPrediction = {
+export type Prediction = {
   averageRRAllianceHangarPoints: number;
   averageFinalsMatchScore: number;
   results: string[];
@@ -13,7 +14,10 @@ export type EinsteinPrediction = {
 
 export type UseEinsteinPrediction = ReturnType<typeof useEinsteinPrediction>;
 
-export default function useEinsteinPrediction(divisions: Division[]) {
+export default function useEinsteinPrediction(
+  divisions: Division[],
+  initialPrediction: EinsteinPredictionAndDivisions | null
+) {
   const divisionsMap = useMemo(
     () =>
       Object.fromEntries(divisions.map((division) => [division.key, division])),
@@ -21,18 +25,28 @@ export default function useEinsteinPrediction(divisions: Division[]) {
   );
 
   const [averageRRAllianceHangarPoints, setAverageRRAllianceHangarPoints] =
-    useState(NaN);
-  const [averageFinalsMatchScore, setAverageFinalsMatchScore] = useState(NaN);
-
-  const [results, setResults] = useState<(string | null)[]>(() =>
-    new Array(15).fill(null)
+    useState(
+      initialPrediction ? initialPrediction.averageRRAllianceHangarPoints : NaN
+    );
+  const [averageFinalsMatchScore, setAverageFinalsMatchScore] = useState(
+    initialPrediction ? initialPrediction.averageFinalsMatchScore : NaN
   );
 
-  const [firstSeed, _setFirstSeed] = useState<string | null>(null);
-  const [secondSeed, _setSecondSeed] = useState<string | null>(null);
-  const [winner, setWinner] = useState<string | null>(null);
+  const [results, setResults] = useState<(string | null)[]>(() =>
+    initialPrediction ? initialPrediction.results : new Array(15).fill(null)
+  );
 
-  const prediction = useMemo<EinsteinPrediction | null>(() => {
+  const [firstSeed, _setFirstSeed] = useState<string | null>(
+    initialPrediction ? initialPrediction.firstSeed.key : null
+  );
+  const [secondSeed, _setSecondSeed] = useState<string | null>(
+    initialPrediction ? initialPrediction.secondSeed.key : null
+  );
+  const [winner, setWinner] = useState<string | null>(
+    initialPrediction ? initialPrediction.winner.key : null
+  );
+
+  const prediction = useMemo<Prediction | null>(() => {
     if (isNaN(averageRRAllianceHangarPoints)) {
       return null;
     } else if (isNaN(averageFinalsMatchScore)) {
