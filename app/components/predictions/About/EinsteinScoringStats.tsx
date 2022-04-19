@@ -36,19 +36,19 @@ export default function EinsteinScoringStats(): JSX.Element {
                 <Tooltip
                   title={
                     <>
-                      What will be the <b>Average Alliance Hangar points</b> of
+                      What will be the <b>Average Alliance Hangar Points</b> of
                       the first seed at the conclusion of the round robin
                       tournament?
                     </>
                   }
                 >
-                  <Chip size="small" label="Average Alliance Hangar points" />
+                  <Chip size="small" label="Average Alliance Hangar Points" />
                 </Tooltip>
               </TableCell>
               <TableCell align="right">40</TableCell>
               <TableCell>
-                40 minus 6 times the distance between your prediction and the
-                actual score.
+                40 points minus 6 times the difference between your prediction
+                and the actual score.
               </TableCell>
               <TableCell>
                 <Typography variant="caption" fontFamily="monospace">
@@ -71,8 +71,8 @@ export default function EinsteinScoringStats(): JSX.Element {
               </TableCell>
               <TableCell align="right">40</TableCell>
               <TableCell>
-                40 minus 2 times the distance between your prediction and the
-                actual score.
+                40 points minus 2 times the difference between your prediction
+                and the actual score.
               </TableCell>
               <TableCell>
                 <Typography variant="caption" fontFamily="monospace">

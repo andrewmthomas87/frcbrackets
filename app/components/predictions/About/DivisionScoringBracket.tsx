@@ -28,28 +28,27 @@ export default function DivisionScoringBracket(): JSX.Element {
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>Semifinals</TableCell>
+              <TableCell>Semifinalists</TableCell>
               <TableCell align="right">80</TableCell>
               <TableCell>
-                For each team that progresses to at least the semifinals, 10
-                points if you predicted that team to progress to at least the
-                semifinals.
+                10 points per team you accurately predicted to progress to at
+                least the semifinals.
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Finals</TableCell>
+              <TableCell>Finalists</TableCell>
               <TableCell align="right">40</TableCell>
               <TableCell>
-                For each team that progresses to the finals, 10 points if you
-                predicted that team to progress to the finals.
+                10 points per team you accurately predicted to progress to the
+                finals.
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Winners</TableCell>
+              <TableCell>Division Winners</TableCell>
               <TableCell align="right">40</TableCell>
               <TableCell>
-                For each team that wins, 20 points if you predicted that team to
-                win.
+                20 points per team you accurately predicted as a division
+                winner.
               </TableCell>
             </TableRow>
           </TableBody>

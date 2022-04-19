@@ -31,15 +31,17 @@ export default function EinsteinScoringFinals(): JSX.Element {
               <TableCell>Finalists</TableCell>
               <TableCell align="right">100</TableCell>
               <TableCell>
-                For each finalist, 50 points for predicting the correct division
-                and seed, 30 points for the correct division but wrong seed.
+                50 points for each exactly correct (division and seed) finalist
+                alliance prediction; 30 points for the correct division but
+                wrong seed.
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Winner</TableCell>
+              <TableCell>Championship Winner</TableCell>
               <TableCell align="right">100</TableCell>
               <TableCell>
-                100 points for predicting the correct winning division.
+                100 points for predicting the correct championship winning
+                alliance division.
               </TableCell>
             </TableRow>
           </TableBody>

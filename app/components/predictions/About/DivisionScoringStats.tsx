@@ -49,8 +49,8 @@ export default function DivisionScoringStats(): JSX.Element {
               </TableCell>
               <TableCell align="right">20</TableCell>
               <TableCell>
-                20 minus the distance between your prediction and the actual
-                score.
+                20 points minus the difference between your prediction and the
+                actual score.
               </TableCell>
               <TableCell>
                 <Typography variant="caption" fontFamily="monospace">
@@ -73,8 +73,8 @@ export default function DivisionScoringStats(): JSX.Element {
               </TableCell>
               <TableCell align="right">20</TableCell>
               <TableCell>
-                20 minus the distance between your prediction and the actual
-                score.
+                20 points minus the difference between your prediction and the
+                actual score.
               </TableCell>
               <TableCell>
                 <Typography variant="caption" fontFamily="monospace">

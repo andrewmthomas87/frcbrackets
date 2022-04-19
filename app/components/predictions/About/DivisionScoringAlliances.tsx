@@ -55,8 +55,8 @@ export default function DivisionScoringAlliances(): JSX.Element {
         </Table>
       </TableContainer>
       <Typography variant="body1" gutterBottom>
-        For each captain and first pick of the actual alliances, the following
-        points are generated:
+        The following points are generated for each captain and first pick of
+        the actual alliances:
       </Typography>
       <TableContainer component={Paper}>
         <Table size="small" sx={{ minWidth: theme.breakpoints.values.md }}>
@@ -70,11 +70,11 @@ export default function DivisionScoringAlliances(): JSX.Element {
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>Distance</TableCell>
+              <TableCell>Difference</TableCell>
               <TableCell align="right">7</TableCell>
               <TableCell>
-                7 minus the distance in index between your prediction and the
-                actual index. 0 if you did not select this team.
+                7 points minus the difference in index between your prediction
+                and the actual index. 0 points if you did not select this team.
               </TableCell>
               <TableCell>
                 <Typography variant="caption" fontFamily="monospace">
@@ -89,9 +89,9 @@ export default function DivisionScoringAlliances(): JSX.Element {
               <TableCell>Alliance</TableCell>
               <TableCell align="right">3</TableCell>
               <TableCell>
-                3 for an exactly correct prediction (alliance number & captain
-                vs. first pick), 2 for the correct alliance number but wrong
-                order, 0 otherwise.
+                For each captain and first pick, 3 for an exactly correct
+                prediction (alliance number & captain vs. first pick), 2 for the
+                correct alliance number but wrong order, 0 otherwise.
               </TableCell>
               <TableCell>
                 <Typography variant="caption" fontFamily="monospace">

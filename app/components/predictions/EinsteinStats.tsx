@@ -32,7 +32,7 @@ export default function EinsteinStats({
           n={1}
           question={
             <>
-              What will be the <b>Average Alliance Hangar points</b> of the
+              What will be the <b>Average Alliance Hangar Points</b> of the
               first seed at the conclusion of the round robin tournament?
             </>
           }
