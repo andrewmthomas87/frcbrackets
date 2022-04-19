@@ -89,10 +89,10 @@ export default function DivisionScoringAlliances(): JSX.Element {
               <TableCell>Alliance captain, first pick</TableCell>
               <TableCell align="right">3</TableCell>
               <TableCell>
-                3 points for each exactly correct placement (captain vs. 1st
-                pick & alliance number), 2 points for a partially correct
-                placement (correct alliance number, wrong position), otherwise,
-                0 points
+                3 points for each exactly correct placement (alliance # &
+                captain vs first pick), 2 points for each partially correct
+                placement (correct alliance #, incorrect captain vs first pick),
+                otherwise, 0 points
               </TableCell>
               <TableCell>
                 <Typography variant="caption" fontFamily="monospace">
