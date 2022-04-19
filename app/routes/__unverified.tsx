@@ -1,9 +1,8 @@
 import {
   AppBar,
+  Box,
   Button,
-  Container,
   Link,
-  Stack,
   Toolbar,
   Typography,
   useMediaQuery,
@@ -16,14 +15,14 @@ import { requireUser } from "~/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await requireUser(request);
-  if (!user.verified) {
-    return redirect("/verify");
+  if (user.verified) {
+    return redirect("/dashboard");
   }
 
   return json({});
 };
 
-export default function SignedInLayout(): JSX.Element {
+export default function UnverifiedLayout(): JSX.Element {
   const theme = useTheme();
   const isAtLeastMd = useMediaQuery(theme.breakpoints.up("md"));
 
@@ -49,48 +48,7 @@ export default function SignedInLayout(): JSX.Element {
               </span>
             </Typography>
           </Link>
-          <Container
-            maxWidth="lg"
-            sx={{ minWidth: theme.breakpoints.values.sm }}
-          >
-            <Stack direction="row" spacing={2} sx={{ mx: 3 }}>
-              <Button
-                size={isAtLeastMd ? "medium" : "small"}
-                component={RemixLink}
-                to="/dashboard"
-              >
-                Dashboard
-              </Button>
-              <Button
-                size={isAtLeastMd ? "medium" : "small"}
-                component={RemixLink}
-                to="/scoring"
-              >
-                Scoring
-              </Button>
-              <Button
-                size={isAtLeastMd ? "medium" : "small"}
-                component={RemixLink}
-                to="/predictions"
-              >
-                Predictions
-              </Button>
-              <Button
-                size={isAtLeastMd ? "medium" : "small"}
-                component={RemixLink}
-                to="/leaderboards"
-              >
-                Leaderboards
-              </Button>
-              <Button
-                size={isAtLeastMd ? "medium" : "small"}
-                component={RemixLink}
-                to="/data"
-              >
-                Data
-              </Button>
-            </Stack>
-          </Container>
+          <Box flexGrow={1} />
           <Form action="/logout" method="post">
             <Button
               type="submit"

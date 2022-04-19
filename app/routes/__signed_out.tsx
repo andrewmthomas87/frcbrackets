@@ -11,12 +11,16 @@ import {
 import type { LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Link as RemixLink, Outlet } from "@remix-run/react";
-import { getUserId } from "~/session.server";
+import { getUser } from "~/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const userID = await getUserId(request);
-  if (userID) {
-    return redirect("/dashboard");
+  const user = await getUser(request);
+  if (user) {
+    if (user.verified) {
+      return redirect("/dashboard");
+    } else {
+      return redirect("/verify");
+    }
   }
 
   return json({});

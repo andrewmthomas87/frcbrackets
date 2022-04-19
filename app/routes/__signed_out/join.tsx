@@ -21,6 +21,7 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import Page from "~/components/Page";
+import { sendVerifyEmail } from "~/mail.server";
 import {
   createUser,
   getUserByEmail,
@@ -49,6 +50,16 @@ function errorResponse(
   status: number = 400
 ): Response {
   return json<ActionData>({ errors }, { status });
+}
+
+const CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+function generateCode(): string {
+  let code = "";
+  for (let i = 0; i < 4; i++) {
+    code += CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
+  }
+  return code;
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -108,7 +119,10 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  const user = await createUser(email, username, password);
+  const code = generateCode();
+  await sendVerifyEmail(email, code);
+
+  const user = await createUser(email, username, password, code);
 
   return createUserSession({
     request,

@@ -22,7 +22,8 @@ async function createAndLogin(email: string) {
   const user = await createUser(
     email,
     email.substring(0, email.length - "@example.com".length),
-    "myreallystrongpassword"
+    "myreallystrongpassword",
+    null
   );
 
   const response = await createUserSession({
