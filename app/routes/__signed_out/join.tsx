@@ -113,7 +113,7 @@ export const action: ActionFunction = async ({ request }) => {
   return createUserSession({
     request,
     userId: user.id,
-    remember: false,
+    remember: true,
     redirectTo: typeof redirectTo === "string" ? redirectTo : "/",
   });
 };

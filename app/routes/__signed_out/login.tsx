@@ -42,7 +42,6 @@ export const action: ActionFunction = async ({ request }) => {
   const email = formData.get("email");
   const password = formData.get("password");
   const redirectTo = formData.get("redirectTo");
-  const remember = formData.get("remember");
 
   if (!validateEmail(email)) {
     return errorResponse({ email: "Email is invalid" });
@@ -63,7 +62,7 @@ export const action: ActionFunction = async ({ request }) => {
   return createUserSession({
     request,
     userId: user.id,
-    remember: remember === "on" ? true : false,
+    remember: true,
     redirectTo: typeof redirectTo === "string" ? redirectTo : "/",
   });
 };
