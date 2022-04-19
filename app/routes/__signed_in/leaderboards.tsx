@@ -33,8 +33,10 @@ export default function LeaderboardsPage(): JSX.Element {
   const divisionKey = matches[matches.length - 1].params["divisionKey"];
   if (divisionKey) {
     tab = divisionKey;
-  } else {
+  } else if (matches[matches.length - 1].pathname.endsWith("einstein")) {
     tab = "einstein";
+  } else {
+    tab = "global";
   }
 
   return (
@@ -50,6 +52,7 @@ export default function LeaderboardsPage(): JSX.Element {
         Leaderboards will be available starting 8 AM Thu, April 21
       </Alert>
       <Tabs variant="scrollable" value={tab} sx={{ mb: 2 }}>
+        <Tab value="global" label="Global" component={RemixLink} to="" />
         {divisions.map((division) => (
           <Tab
             key={division.key}

@@ -1,7 +1,6 @@
 import { Alert } from "@mui/material";
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import Page from "~/components/Page";
 import { prisma } from "~/db.server";
 
 export const loader: LoaderFunction = async () => {
@@ -19,10 +18,8 @@ export const loader: LoaderFunction = async () => {
 
 export default function Redirecting(): JSX.Element {
   return (
-    <Page maxWidth="lg">
-      <Alert variant="outlined" severity="info">
-        Redirecting...
-      </Alert>
-    </Page>
+    <Alert variant="outlined" severity="info">
+      Redirecting...
+    </Alert>
   );
 }
