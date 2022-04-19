@@ -46,7 +46,7 @@ export default function PredictionsPage(): JSX.Element {
         Your predictions for the 2022 <i>FIRST</i> <sup>®</sup> Robotics
         Competition Championship
       </Typography>
-      <Alert variant="filled" severity="info" sx={{ my: 2 }}>
+      <Alert variant="filled" severity="warning" sx={{ my: 2 }}>
         Predictions will lock 8 AM Thu, April 21
       </Alert>
       <Tabs variant="scrollable" value={tab} sx={{ mb: 2 }}>
