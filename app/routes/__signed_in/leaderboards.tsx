@@ -21,11 +21,11 @@ export const loader: LoaderFunction = async () => {
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Predictions - frcbrackets",
+    title: "Leaderboards - frcbrackets",
   };
 };
 
-export default function PredictionsPage(): JSX.Element {
+export default function LeaderboardsPage(): JSX.Element {
   const divisions = useLoaderData<Division[]>();
 
   const matches = useMatches();
@@ -40,14 +40,14 @@ export default function PredictionsPage(): JSX.Element {
   return (
     <Page maxWidth="lg">
       <Typography variant="h3" component="h1" gutterBottom>
-        Predictions
+        Leaderboards
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Your predictions for the 2022 <i>FIRST</i> <sup>®</sup> Robotics
-        Competition Championship
+        Leaderboards for the 2022 <i>FIRST</i> <sup>®</sup> Robotics Competition
+        Championship
       </Typography>
       <Alert variant="filled" severity="info" sx={{ my: 2 }}>
-        Predictions will lock 8 AM Thu, April 21
+        Leaderboards will be available starting 8 AM Thu, April 21
       </Alert>
       <Tabs variant="scrollable" value={tab} sx={{ mb: 2 }}>
         {divisions.map((division) => (

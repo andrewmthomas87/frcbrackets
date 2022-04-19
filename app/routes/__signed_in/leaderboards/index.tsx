@@ -12,5 +12,5 @@ export const loader: LoaderFunction = async () => {
     throw new Error("Expected divisions");
   }
 
-  return redirect(`/predictions/${division.key}`);
+  return redirect(`/leaderboards/${division.key}`);
 };

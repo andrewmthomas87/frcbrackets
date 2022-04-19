@@ -18,11 +18,11 @@ export default function DivisionSubmit({
     <Stack direction="column" spacing={2} alignItems="flex-start">
       {result &&
         (result.error ? (
-          <Alert severity="error" variant="outlined">
+          <Alert severity="error" variant="filled">
             {result.error}
           </Alert>
         ) : (
-          <Alert severity="success" variant="outlined">
+          <Alert severity="success" variant="filled">
             Predictions saved!
           </Alert>
         ))}

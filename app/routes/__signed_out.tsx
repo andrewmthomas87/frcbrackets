@@ -34,7 +34,7 @@ export default function SignedOutLayout(): JSX.Element {
       >
         <Toolbar>
           <Link component={RemixLink} to="/" underline="hover">
-            <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            <Typography variant="h5" fontWeight={700}>
               <span style={{ color: theme.palette.primary.light }}>frc</span>
               <span
                 style={{

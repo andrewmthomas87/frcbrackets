@@ -32,7 +32,7 @@ export default function SignedInLayout(): JSX.Element {
       >
         <Toolbar variant={isAtLeastMd ? "regular" : "dense"}>
           <Link component={RemixLink} to="/dashboard" underline="hover">
-            <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            <Typography variant="h5" fontWeight={700}>
               <span style={{ color: theme.palette.primary.light }}>frc</span>
               <span
                 style={{
@@ -57,9 +57,23 @@ export default function SignedInLayout(): JSX.Element {
               <Button
                 size={isAtLeastMd ? "medium" : "small"}
                 component={RemixLink}
+                to="/scoring"
+              >
+                Scoring
+              </Button>
+              <Button
+                size={isAtLeastMd ? "medium" : "small"}
+                component={RemixLink}
                 to="/predictions"
               >
                 Predictions
+              </Button>
+              <Button
+                size={isAtLeastMd ? "medium" : "small"}
+                component={RemixLink}
+                to="/leaderboards"
+              >
+                Leaderboards
               </Button>
               <Button
                 size={isAtLeastMd ? "medium" : "small"}

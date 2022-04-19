@@ -98,7 +98,7 @@ export default function EinsteinFinals({
         />
         <Question
           n={3}
-          question="Which division will win the FIRST Championship?"
+          question="Which division will win the championship?"
           input={
             <FinalMatchup
               isDisabled={isDisabled}
