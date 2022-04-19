@@ -1,3 +1,4 @@
+import { fetch } from "@remix-run/node";
 import "dotenv/config";
 import { prisma } from "~/db.server";
 import { TBA } from "./api";
@@ -129,6 +130,84 @@ async function seedDivisionTeams() {
   console.log(`Database has been seeded with division teams. 🌱`);
 }
 
+type DivisionAlternate =
+  | "Archimedes"
+  | "Carson"
+  | "Carver"
+  | "Curie"
+  | "Daly"
+  | "Darwin"
+  | "Galileo"
+  | "Hopper"
+  | "Newton"
+  | "Roebling"
+  | "Tesla"
+  | "Turing";
+
+type TeamAlternate = {
+  team_number: string;
+  division_name: DivisionAlternate | null;
+};
+
+const ALTERNATE_DIVISION_MAP: Record<DivisionAlternate, string | null> = {
+  Archimedes: null,
+  Carson: null,
+  Carver: "2022carv",
+  Curie: null,
+  Daly: null,
+  Darwin: null,
+  Galileo: "2022gal",
+  Hopper: "2022hop",
+  Newton: "2022new",
+  Roebling: "2022roe",
+  Tesla: null,
+  Turing: "2022tur",
+};
+
+async function seedDivisionTeamsAlternate() {
+  await prisma.team.updateMany({
+    data: {
+      divisionKey: null,
+    },
+  });
+
+  console.log("Reset division assignments...");
+
+  const teams: TeamAlternate[] = await fetch(
+    "http://frc.divisions.co/api/v2/team_list"
+  ).then((response) => response.json());
+
+  console.log("Fetched alternate team list...");
+
+  for (let team of teams) {
+    if (team.division_name === null) {
+      console.log(`Skipping team ${team.team_number}: no division`);
+
+      continue;
+    }
+
+    const divisionKey = ALTERNATE_DIVISION_MAP[team.division_name];
+    if (divisionKey === null) {
+      console.log(
+        `Skipping team ${team.team_number}: bad division "${team.division_name}"`
+      );
+
+      continue;
+    }
+
+    await prisma.team.update({
+      where: { teamNumber: parseInt(team.team_number) },
+      data: {
+        division: {
+          connect: { key: divisionKey },
+        },
+      },
+    });
+  }
+
+  console.log(`Database has been seeded with division teams alternate. 🌱`);
+}
+
 async function main() {
   try {
     switch (process.argv[2]) {
@@ -146,9 +225,12 @@ async function main() {
       case "division-teams":
         await seedDivisionTeams();
         break;
+      case "division-teams-alternate":
+        await seedDivisionTeamsAlternate();
+        break;
       default:
         console.log(
-          "Usage: npm run data:seed -- [all | teams | divisions | division-teams]"
+          "Usage: npm run data:seed -- [all | teams | divisions | division-teams | division-teams-alternate]"
         );
         break;
     }

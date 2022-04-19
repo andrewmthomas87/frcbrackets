@@ -30,12 +30,16 @@ export default function Page({
             <Link target="_blank" href="https://www.thebluealliance.com">
               The Blue Alliance
             </Link>{" "}
-            &{" "}
+            ,{" "}
             <Link
               href="https://github.com/inkling16/SykesScoutingDatabase"
               target="_blank"
             >
               SykesScoutingDatabase
+            </Link>
+            ,{" "}
+            <Link target="_blank" href="https://frc.divisions.co">
+              divisions.co
             </Link>
           </Typography>
         </Stack>
