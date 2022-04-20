@@ -1,4 +1,5 @@
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Alert, Button, Stack, TextField, Typography } from "@mui/material";
 import type { User } from "@prisma/client";
 import type {
   ActionFunction,
@@ -6,7 +7,12 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react";
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Page from "~/components/Page";
@@ -68,6 +74,7 @@ export const meta: MetaFunction = () => {
 export default function VerifyPage(): JSX.Element {
   const user = useLoaderData<User>();
   const actionData = useActionData<{ error?: string }>();
+  const data = useTransition();
 
   const [verificationCode, setVerificationCode] = useState("");
 
@@ -85,16 +92,38 @@ export default function VerifyPage(): JSX.Element {
     [setVerificationCode]
   );
 
+  const isResendCodeLoading =
+    data.state === "submitting" &&
+    data.location.pathname.endsWith("resend-code");
+
   return (
     <Page maxWidth="sm">
       <Typography variant="h3" component="h1" gutterBottom>
         Verify account
       </Typography>
-      <Stack direction="column" spacing={1} sx={{ pb: 2 }}>
+      <Stack direction="column" spacing={2} sx={{ pb: 2 }}>
         <Typography variant="subtitle1">
           An email with an access code has been sent to <b>{user.email}</b>. To
           verify your account, retrieve the access code and input it below.
         </Typography>
+        <Alert
+          variant="outlined"
+          severity="info"
+          action={
+            <Form method="post" action="resend-code">
+              <LoadingButton
+                loading={isResendCodeLoading}
+                color="info"
+                size="small"
+                type="submit"
+              >
+                Resend code
+              </LoadingButton>
+            </Form>
+          }
+        >
+          Didn't get the code?
+        </Alert>
       </Stack>
       <Form method="post" noValidate>
         <Stack direction="column" spacing={2}>
