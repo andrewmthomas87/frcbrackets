@@ -1,10 +1,10 @@
 import { createTransport } from "nodemailer";
 
 const transport = createTransport({
-  service: "gmail",
+  service: "SendGrid",
   auth: {
-    user: process.env.MAIL_GMAIL_USER!,
-    pass: process.env.MAIL_GMAIL_PASS!,
+    user: process.env.MAIL_USER!,
+    pass: process.env.MAIL_PASS!,
   },
 });
 
@@ -15,7 +15,7 @@ export async function sendVerifyEmail(
   const message = `Your verification code is ${code}. Log in to https://frcbrackets.com/ and enter this code to verify your account.`;
 
   await transport.sendMail({
-    from: process.env.MAIL_GMAIL_USER!,
+    from: process.env.MAIL_FROM!,
     to: email,
     subject: "Verify your frcbrackets.com account",
     text: message,
