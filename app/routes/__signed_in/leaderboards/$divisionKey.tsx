@@ -46,7 +46,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       divisionPredictionUsers.map((value) => value.user.username)
     ).values()
   );
-  usernames.sort();
+  usernames.sort((a, b) => (a.toLowerCase() > b.toLowerCase() ? 1 : -1));
 
   return { isLocked, usernames };
 };
