@@ -52,7 +52,7 @@ export const loader: LoaderFunction = async () => {
         .concat(einsteinPredictionUsers.map((value) => value.user.username))
     ).values()
   );
-  usernames.sort((a, b) => (a.toLowerCase() < b.toLowerCase() ? 1 : -1));
+  usernames.sort((a, b) => (a.toLowerCase() > b.toLowerCase() ? 1 : -1));
 
   return { isLocked, usernames };
 };
