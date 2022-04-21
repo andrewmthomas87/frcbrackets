@@ -4,6 +4,7 @@ import DivisionCard from "../DivisionCard";
 import type { UseEinsteinPrediction } from "../useEinsteinPrediction";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   n: number;
   red: string;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export default function Matchup({
+  isLocked,
   isDisabled,
   n,
   red,
@@ -40,7 +42,7 @@ export default function Matchup({
             selected === red ? true : selected === blue ? false : null
           }
           lookupDivision={lookupDivision}
-          onSelect={onSelectRed}
+          onSelect={isLocked ? () => {} : onSelectRed}
         />
         <Typography variant="body2">vs.</Typography>
         <DivisionCard
@@ -51,7 +53,7 @@ export default function Matchup({
             selected === blue ? true : selected === red ? false : null
           }
           lookupDivision={lookupDivision}
-          onSelect={onSelectBlue}
+          onSelect={isLocked ? () => {} : onSelectBlue}
         />
       </Stack>
     </Stack>

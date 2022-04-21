@@ -4,12 +4,14 @@ import { Form } from "@remix-run/react";
 import type { Prediction } from "./useEinsteinPrediction";
 
 type Props = {
+  isLocked: boolean;
   isSubmitting: boolean;
   result: { error?: string } | undefined;
   prediction: Prediction | null;
 };
 
 export default function EinsteinSubmit({
+  isLocked,
   isSubmitting,
   result,
   prediction,
@@ -37,7 +39,7 @@ export default function EinsteinSubmit({
           type="submit"
           variant="contained"
           size="large"
-          disabled={!prediction}
+          disabled={!prediction || isLocked}
           loading={isSubmitting}
         >
           Save predictions

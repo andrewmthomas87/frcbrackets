@@ -21,6 +21,7 @@ import {
   upsertDivisionPrediction,
 } from "~/db.server";
 import { requireUserId } from "~/session.server";
+import { arePredictionsLocked } from "~/utils";
 
 function isAlliances(alliances: any): alliances is [string, string][] {
   return (
@@ -81,6 +82,11 @@ function isPrediction(data: any): data is Prediction {
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
+  const isLocked = arePredictionsLocked();
+  if (isLocked) {
+    return json({ error: "Predictions are locked" });
+  }
+
   const formData = await request.formData();
   const prediction: any = JSON.parse(
     (formData.get("prediction") as string | null) || ""
@@ -120,12 +126,15 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 type LoaderDataType = {
+  isLocked: boolean;
   division: Division;
   teams: SimpleTeamAndStats[];
   prediction: DivisionPredictionAndAlliances | null;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
+  const isLocked = arePredictionsLocked();
+
   const divisionKey = params["divisionKey"]!;
   const division = await prisma.division.findUnique({
     where: { key: divisionKey },
@@ -139,11 +148,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const userID = await requireUserId(request);
   const prediction = await divisionPredictionAndAlliances(userID, division.key);
 
-  return json<LoaderDataType>({ division, teams, prediction });
+  return json<LoaderDataType>({ isLocked, division, teams, prediction });
 };
 
 export default function DivisionTab(): JSX.Element {
   const {
+    isLocked,
     division,
     teams,
     prediction: initialPrediction,
@@ -173,6 +183,7 @@ export default function DivisionTab(): JSX.Element {
         {division.name}
       </Typography>
       <DivisionStats
+        isLocked={isLocked}
         isDisabled={isSubmitting}
         averageQualificationMatchScore={averageQualificationMatchScore}
         averagePlayoffMatchScore={averagePlayoffMatchScore}
@@ -180,6 +191,7 @@ export default function DivisionTab(): JSX.Element {
         setAveragePlayoffMatchScore={setAveragePlayoffMatchScore}
       />
       <DivisionAlliances
+        isLocked={isLocked}
         isDisabled={isSubmitting}
         sortedTeams={sortedTeams}
         alliances={alliances}
@@ -187,6 +199,7 @@ export default function DivisionTab(): JSX.Element {
         setAllianceTeam={setAllianceTeam}
       />
       <DivisionBracket
+        isLocked={isLocked}
         isDisabled={isSubmitting}
         alliances={alliances}
         results={results}
@@ -194,6 +207,7 @@ export default function DivisionTab(): JSX.Element {
         setResult={setResult}
       />
       <DivisionSubmit
+        isLocked={isLocked}
         isSubmitting={isSubmitting}
         result={actionData}
         prediction={prediction}

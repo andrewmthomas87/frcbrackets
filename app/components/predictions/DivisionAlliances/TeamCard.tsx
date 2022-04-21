@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import type { SimpleTeamAndStats } from "~/db.server";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   isCaptain: boolean;
   team: SimpleTeamAndStats | null;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function TeamCard({
+  isLocked,
   isDisabled,
   isCaptain,
   team,
@@ -30,6 +32,7 @@ export default function TeamCard({
         value={team}
         options={(team ? [team] : []).concat(filteredTeams)}
         disabled={isDisabled}
+        readOnly={isLocked}
         size="small"
         fullWidth
         openOnFocus

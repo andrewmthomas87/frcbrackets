@@ -5,6 +5,7 @@ import type { Alliance, UsePrediction } from "../usePrediction";
 import AllianceSelect from "./AllianceSelect";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   sortedTeams: SimpleTeamAndStats[];
   alliances: Alliance[];
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export default function DivisionAlliances({
+  isLocked,
   isDisabled,
   sortedTeams,
   alliances,
@@ -41,6 +43,7 @@ export default function DivisionAlliances({
         {alliances.map((alliance, index) => (
           <AllianceSelect
             key={index}
+            isLocked={isLocked}
             isDisabled={isDisabled}
             n={index + 1}
             alliance={alliance}

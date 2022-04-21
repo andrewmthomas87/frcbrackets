@@ -83,4 +83,86 @@ export namespace TBA {
   export async function eventTeamKeys(eventKey: string): Promise<string[]> {
     return _get<string[]>(`/event/${eventKey}/teams/keys`);
   }
+
+  export type EventMatchSimple = {
+    key: string;
+    comp_level: string;
+    set_number: number;
+    match_number: number;
+    alliances: {
+      red: {
+        score: number;
+        team_keys: string[];
+        surrogate_team_keys: string[];
+        dq_team_keys: string[];
+      };
+      blue: {
+        score: number;
+        team_keys: string[];
+        surrogate_team_keys: string[];
+        dq_team_keys: string[];
+      };
+    };
+    winning_alliance: string;
+    event_key: string;
+    time: number;
+    predicted_time: number;
+    actual_time: number;
+  };
+
+  export async function eventMatchesSimple(
+    eventKey: string
+  ): Promise<EventMatchSimple[]> {
+    return _get<EventMatchSimple[]>(`/event/${eventKey}/matches/simple`);
+  }
+
+  export type Ranking = {
+    matches_played: number;
+    qual_average: number;
+    extra_stats: number[];
+    sort_orders: number[];
+    record: {
+      losses: number;
+      wins: number;
+      ties: number;
+    };
+    rank: number;
+    dq: number;
+    team_key: string;
+  };
+
+  export async function eventRankings(eventKey: string): Promise<Ranking[]> {
+    return _get<{ rankings: Ranking[] }>(`/event/${eventKey}/rankings`).then(
+      ({ rankings }) => rankings
+    );
+  }
+
+  export type Alliance = {
+    name: string;
+    backup: {
+      in: string;
+      out: string;
+    };
+    declines: string[];
+    picks: string[];
+    status: {
+      playoff_average: number;
+      level: string;
+      record: {
+        losses: number;
+        wins: number;
+        ties: number;
+      };
+      current_level_record: {
+        losses: number;
+        wins: number;
+        ties: number;
+      };
+      status: string;
+    };
+  };
+
+  export async function eventAlliances(eventKey: string): Promise<Alliance[]> {
+    return _get<Alliance[]>(`/event/${eventKey}/alliances`);
+  }
 }

@@ -3,6 +3,7 @@ import type { UseEinsteinPrediction } from "../useEinsteinPrediction";
 import Matchup from "./Matchup";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   results: (string | null)[];
 
@@ -29,6 +30,7 @@ const MATCHUPS: [string, string][] = [
 ];
 
 export default function EinsteinRoundRobin({
+  isLocked,
   isDisabled,
   results,
   lookupDivision,
@@ -52,6 +54,7 @@ export default function EinsteinRoundRobin({
         {MATCHUPS.map(([red, blue], index) => (
           <Matchup
             key={index}
+            isLocked={isLocked}
             isDisabled={isDisabled}
             n={index + 1}
             red={red}

@@ -3,6 +3,7 @@ import type { Alliance, UsePrediction } from "../usePrediction";
 import Matchup from "./Matchup";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   alliances: Alliance[];
   results: number[];
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function DivisionBracket({
+  isLocked,
   isDisabled,
   alliances,
   results,
@@ -51,6 +53,7 @@ export default function DivisionBracket({
           {quarterfinals.map(([red, blue], index) => (
             <Matchup
               key={index}
+              isLocked={isLocked}
               isDisabled={isDisabled}
               n={index + 1}
               red={{
@@ -78,6 +81,7 @@ export default function DivisionBracket({
             [0, 0].map((_, index) => (
               <Matchup
                 key={index + 1}
+                isLocked={isLocked}
                 isDisabled={isDisabled}
                 n={index + 1}
                 red={{
@@ -106,6 +110,7 @@ export default function DivisionBracket({
           <Chip variant="outlined" label="Final" />
           {shouldShowFinals ? (
             <Matchup
+              isLocked={isLocked}
               isDisabled={isDisabled}
               n={1}
               red={{

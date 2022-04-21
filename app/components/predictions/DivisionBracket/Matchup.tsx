@@ -4,6 +4,7 @@ import type { Alliance, UsePrediction } from "../usePrediction";
 import AllianceCard from "./AllianceCard";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   n: number;
   red: {
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export default function Matchup({
+  isLocked,
   isDisabled,
   n,
   red,
@@ -53,7 +55,7 @@ export default function Matchup({
               : null
           }
           lookupTeam={lookupTeam}
-          onSelect={onSelectRed}
+          onSelect={isLocked ? () => {} : onSelectRed}
         />
         <Typography variant="body2">vs.</Typography>
         <AllianceCard
@@ -68,7 +70,7 @@ export default function Matchup({
               : null
           }
           lookupTeam={lookupTeam}
-          onSelect={onSelectBlue}
+          onSelect={isLocked ? () => {} : onSelectBlue}
         />
       </Stack>
     </Stack>

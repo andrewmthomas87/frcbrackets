@@ -12,6 +12,7 @@ import type { Division } from "@prisma/client";
 import { useCallback } from "react";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   label: string;
   division: Division | null;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export default function DivisionSelect({
+  isLocked,
   isDisabled,
   label,
   division,
@@ -43,6 +45,7 @@ export default function DivisionSelect({
         value={division?.key}
         label={label}
         disabled={isDisabled}
+        readOnly={isLocked}
         onChange={onChange}
       >
         {divisions.map((division) => (

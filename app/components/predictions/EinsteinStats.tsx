@@ -4,6 +4,7 @@ import ScoreInput from "./ScoreInput";
 import type { UseEinsteinPrediction } from "./useEinsteinPrediction";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   averageRRAllianceHangarPoints: number;
   averageFinalsMatchScore: number;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export default function EinsteinStats({
+  isLocked,
   isDisabled,
   averageRRAllianceHangarPoints,
   averageFinalsMatchScore,
@@ -40,6 +42,7 @@ export default function EinsteinStats({
             <ScoreInput
               label="Alliance hangar points"
               value={averageRRAllianceHangarPoints}
+              isLocked={isLocked}
               isDisabled={isDisabled}
               onSetValue={setAverageRRAllianceHangarPoints}
             />
@@ -57,6 +60,7 @@ export default function EinsteinStats({
             <ScoreInput
               label="Match score"
               value={averageFinalsMatchScore}
+              isLocked={isLocked}
               isDisabled={isDisabled}
               onSetValue={setAverageFinalsMatchScore}
             />

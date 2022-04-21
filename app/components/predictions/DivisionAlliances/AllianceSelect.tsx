@@ -5,6 +5,7 @@ import type { UsePrediction } from "../usePrediction";
 import TeamCard from "./TeamCard";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   n: number;
   alliance: [string | null, string | null];
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export default function AllianceSelect({
+  isLocked,
   isDisabled,
   n,
   alliance,
@@ -39,6 +41,7 @@ export default function AllianceSelect({
       </Typography>
       <Stack direction="row" spacing={2}>
         <TeamCard
+          isLocked={isLocked}
           isDisabled={isDisabled}
           isCaptain={true}
           team={alliance[0] ? lookupTeam(alliance[0]) : null}
@@ -46,6 +49,7 @@ export default function AllianceSelect({
           onSetTeamKey={onSetCaptain}
         />
         <TeamCard
+          isLocked={isLocked}
           isDisabled={isDisabled}
           isCaptain={false}
           team={alliance[1] ? lookupTeam(alliance[1]) : null}

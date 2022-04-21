@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 type Props = {
   label: string;
   value: number;
+  isLocked: boolean;
   isDisabled: boolean;
 
   onSetValue(value: number): void;
@@ -13,6 +14,7 @@ type Props = {
 export default function ScoreInput({
   label,
   value,
+  isLocked,
   isDisabled,
 
   onSetValue,
@@ -53,6 +55,7 @@ export default function ScoreInput({
       inputMode="numeric"
       value={valueStr}
       disabled={isDisabled}
+      InputProps={{ readOnly: isLocked }}
       error={isErrored}
       helperText={isErrored ? "Must be a positive number" : undefined}
       onChange={onChange}

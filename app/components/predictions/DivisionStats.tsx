@@ -4,6 +4,7 @@ import ScoreInput from "./ScoreInput";
 import type { UsePrediction } from "./usePrediction";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   averageQualificationMatchScore: number;
   averagePlayoffMatchScore: number;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export default function DivisionStats({
+  isLocked,
   isDisabled,
   averageQualificationMatchScore,
   averagePlayoffMatchScore,
@@ -40,6 +42,7 @@ export default function DivisionStats({
             <ScoreInput
               label="Match score"
               value={averageQualificationMatchScore}
+              isLocked={isLocked}
               isDisabled={isDisabled}
               onSetValue={setAverageQualificationMatchScore}
             />
@@ -57,6 +60,7 @@ export default function DivisionStats({
             <ScoreInput
               label="Match score"
               value={averagePlayoffMatchScore}
+              isLocked={isLocked}
               isDisabled={isDisabled}
               onSetValue={setAveragePlayoffMatchScore}
             />

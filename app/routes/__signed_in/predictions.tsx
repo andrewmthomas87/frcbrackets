@@ -10,13 +10,21 @@ import {
 } from "@remix-run/react";
 import Page from "~/components/Page";
 import { prisma } from "~/db.server";
+import { arePredictionsLocked } from "~/utils";
+
+type LoaderData = {
+  isLocked: boolean;
+  divisions: Division[];
+};
 
 export const loader: LoaderFunction = async () => {
+  const isLocked = arePredictionsLocked();
+
   const divisions = await prisma.division.findMany({
     orderBy: { name: "asc" },
   });
 
-  return json(divisions);
+  return json<LoaderData>({ isLocked, divisions });
 };
 
 export const meta: MetaFunction = () => {
@@ -26,7 +34,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function PredictionsPage(): JSX.Element {
-  const divisions = useLoaderData<Division[]>();
+  const { isLocked, divisions } = useLoaderData<LoaderData>();
 
   const matches = useMatches();
   let tab: string;
@@ -46,9 +54,15 @@ export default function PredictionsPage(): JSX.Element {
         Your predictions for the 2022 <i>FIRST</i> <sup>®</sup> Robotics
         Competition Championship
       </Typography>
-      <Alert variant="filled" severity="warning" sx={{ my: 2 }}>
-        Predictions will lock 8 AM Thu, April 21
-      </Alert>
+      {isLocked ? (
+        <Alert variant="filled" severity="info" sx={{ my: 2 }}>
+          Predictions are locked
+        </Alert>
+      ) : (
+        <Alert variant="filled" severity="warning" sx={{ my: 2 }}>
+          Predictions will lock 8 AM Thu, April 21
+        </Alert>
+      )}
       <Tabs variant="scrollable" value={tab} sx={{ mb: 2 }}>
         {divisions.map((division) => (
           <Tab

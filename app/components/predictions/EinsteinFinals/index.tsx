@@ -7,6 +7,7 @@ import DivisionSelect from "./DivisionSelect";
 import FinalMatchup from "./FinalMatchup";
 
 type Props = {
+  isLocked: boolean;
   isDisabled: boolean;
   divisions: Division[];
   results: (string | null)[];
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export default function EinsteinFinals({
+  isLocked,
   isDisabled,
   divisions,
   results,
@@ -73,6 +75,7 @@ export default function EinsteinFinals({
           question="Which division will seed first?"
           input={
             <DivisionSelect
+              isLocked={isLocked}
               isDisabled={isDisabled}
               label="First seed"
               division={firstSeed ? lookupDivision(firstSeed) : null}
@@ -87,6 +90,7 @@ export default function EinsteinFinals({
           question="Which division will seed second?"
           input={
             <DivisionSelect
+              isLocked={isLocked}
               isDisabled={isDisabled}
               label="Second seed"
               division={secondSeed ? lookupDivision(secondSeed) : null}
@@ -101,6 +105,7 @@ export default function EinsteinFinals({
           question="Which division will win the championship?"
           input={
             <FinalMatchup
+              isLocked={isLocked}
               isDisabled={isDisabled}
               firstSeed={firstSeed}
               secondSeed={secondSeed}

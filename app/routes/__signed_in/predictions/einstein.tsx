@@ -17,6 +17,7 @@ import {
   upsertEinsteinPrediction,
 } from "~/db.server";
 import { requireUserId } from "~/session.server";
+import { arePredictionsLocked } from "~/utils";
 
 function isResults(results: any): results is string[] {
   return (
@@ -77,6 +78,11 @@ function isPrediction(data: any): data is Prediction {
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
+  const isLocked = arePredictionsLocked();
+  if (isLocked) {
+    return json({ error: "Predictions are locked" });
+  }
+
   const formData = await request.formData();
   const prediction: any = JSON.parse(
     (formData.get("prediction") as string | null) || ""
@@ -127,22 +133,28 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 type LoaderDataType = {
+  isLocked: boolean;
   divisions: Division[];
   prediction: EinsteinPredictionAndDivisions | null;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
+  const isLocked = arePredictionsLocked();
+
   const divisions = await prisma.division.findMany();
 
   const userID = await requireUserId(request);
   const prediction = await einsteinPredictionAndDivisions(userID);
 
-  return json<LoaderDataType>({ divisions, prediction });
+  return json<LoaderDataType>({ isLocked, divisions, prediction });
 };
 
 export default function EinsteinTab(): JSX.Element {
-  const { divisions, prediction: initialPrediction } =
-    useLoaderData<LoaderDataType>();
+  const {
+    isLocked,
+    divisions,
+    prediction: initialPrediction,
+  } = useLoaderData<LoaderDataType>();
   const actionData = useActionData<{ error?: string }>();
   const { state } = useTransition();
 
@@ -171,6 +183,7 @@ export default function EinsteinTab(): JSX.Element {
         Einstein Field
       </Typography>
       <EinsteinStats
+        isLocked={isLocked}
         isDisabled={isSubmitting}
         averageRRAllianceHangarPoints={averageRRAllianceHangarPoints}
         averageFinalsMatchScore={averageFinalsMatchScore}
@@ -178,12 +191,14 @@ export default function EinsteinTab(): JSX.Element {
         setAverageFinalsMatchScore={setAverageFinalsMatchScore}
       />
       <EinsteinRoundRobin
+        isLocked={isLocked}
         isDisabled={isSubmitting}
         results={results}
         lookupDivision={lookupDivision}
         setResult={setResult}
       />
       <EinsteinFinals
+        isLocked={isLocked}
         isDisabled={isSubmitting}
         divisions={divisions}
         results={results}
@@ -196,6 +211,7 @@ export default function EinsteinTab(): JSX.Element {
         setWinner={setWinner}
       />
       <EinsteinSubmit
+        isLocked={isLocked}
         isSubmitting={isSubmitting}
         result={actionData}
         prediction={prediction}
