@@ -135,7 +135,7 @@ model TeamStats {
 }
 
 model DivisionPredictionAlliance {
-  divisionPrediction            DivisionPrediction @relation(fields: [divisionPredictionUserID, divisionPredictionDivisionKey], references: [userID, divisionKey])
+  divisionPrediction            DivisionPrediction @relation(name: "alliances", fields: [divisionPredictionUserID, divisionPredictionDivisionKey], references: [userID, divisionKey])
   divisionPredictionUserID      String
   divisionPredictionDivisionKey String
 
@@ -159,9 +159,11 @@ model DivisionPrediction {
   averageQualificationMatchScore Int
   averagePlayoffMatchScore       Int
 
-  alliances DivisionPredictionAlliance[]
+  alliances DivisionPredictionAlliance[] @relation(name: "alliances")
 
   results Int[]
+
+  score DivisionPredictionScore? @relation(name: "score")
 
   @@id([userID, divisionKey])
 }
@@ -180,4 +182,16 @@ model EinsteinPrediction {
   secondSeedDivisionKey String
   winner                Division @relation(name: "winners", fields: [winnerDivisionKey], references: [key])
   winnerDivisionKey     String
+}
+
+model DivisionPredictionScore {
+  divisionPrediction            DivisionPrediction @relation(name: "score", fields: [divisionPredictionUserID, divisionPredictionDivisionKey], references: [userID, divisionKey])
+  divisionPredictionUserID      String
+  divisionPredictionDivisionKey String
+
+  sum                            Int
+  averageQualificationMatchScore Int
+  averagePlayoffMatchScore       Int
+  alliances                      Int
+  bracket                        Int
 }

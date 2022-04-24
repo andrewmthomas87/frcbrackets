@@ -1,3 +1,8 @@
+import type {
+  DivisionPrediction,
+  DivisionPredictionAlliance,
+  User,
+} from "@prisma/client";
 import type { TBA } from "./api";
 
 export type DivisionPlayoffMatch = {
@@ -29,7 +34,7 @@ export type DivisionData = {
   alliances: DivisionAllianceAndResults[];
 };
 
-export type DivisionPreditionData = {
+export type DivisionPredictionData = {
   averageQualificationMatchScore: number;
   averagePlayoffMatchScore: number;
   alliances: DivisionAllianceAndResults[];
@@ -44,7 +49,7 @@ export type DivisionPredictionScore = {
 
 export function divisionPredictionScore(
   data: DivisionData,
-  prediction: DivisionPreditionData
+  prediction: DivisionPredictionData
 ): DivisionPredictionScore {
   const score: DivisionPredictionScore = {
     averageQualificationMatchScore: 0,
@@ -127,9 +132,8 @@ export function divisionPredictionScore(
 
     const difference = Math.max(0, 7 - Math.abs(i - predictionI));
     const isCorrect = i === predictionI;
-    const isPartiallyCorrect = (i - 1) % 2 === (predictionI - 1) % 2;
-
-    console.log(teamKey, difference, isCorrect, isPartiallyCorrect);
+    const isPartiallyCorrect =
+      Math.floor((i - 1) / 2) === Math.floor((predictionI - 1) / 2);
 
     score.alliances +=
       difference + (isCorrect ? 3 : isPartiallyCorrect ? 2 : 0);
@@ -178,8 +182,6 @@ export function divisionPredictionScore(
     winners.has(teamKey)
   ).length;
 
-  console.log(correctAtLeastSemis, correctFinalists, correctWinners);
-
   score.bracket =
     10 * correctAtLeastSemis + 10 * correctFinalists + 20 * correctWinners;
 
@@ -190,6 +192,10 @@ export function tbaMatchesToPlayoffMatches(
   tbaMatches: TBA.EventMatchSimple[]
 ): DivisionPlayoffMatch[] {
   return tbaMatches
+    .filter(
+      ({ alliances }) =>
+        !(alliances.red.score === -1 || alliances.red.score === -1)
+    )
     .filter(
       ({ comp_level }) =>
         comp_level === "qf" || comp_level === "sf" || comp_level === "f"
@@ -234,4 +240,34 @@ export function tbaAlliancesToAlliances(
           : (tbaAlliance.status.level as "qf" | "sf" | "f"),
       pickKeys: tbaAlliance.picks,
     }));
+}
+
+export type DivisionPredictionAndAlliancesAndUser = DivisionPrediction & {
+  alliances: DivisionPredictionAlliance[];
+  user: User;
+};
+
+export function convertPrediction(
+  prediction: DivisionPredictionAndAlliancesAndUser
+): DivisionPredictionData {
+  prediction.alliances.sort((a, b) => a.number - b.number);
+  const alliances = prediction.alliances.map<DivisionAllianceAndResults>(
+    (alliance) => ({
+      level: "qf",
+      pickKeys: [alliance.captainTeamKey, alliance.firstPickTeamKey],
+    })
+  );
+
+  prediction.results.slice(0, 4).map((n) => (alliances[n - 1].level = "sf"));
+  prediction.results.slice(4, 6).map((n) => (alliances[n - 1].level = "f"));
+  alliances[prediction.results[6] - 1].level = "w";
+
+  const { averageQualificationMatchScore, averagePlayoffMatchScore } =
+    prediction;
+
+  return {
+    averageQualificationMatchScore,
+    averagePlayoffMatchScore,
+    alliances,
+  };
 }

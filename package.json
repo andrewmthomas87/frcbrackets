@@ -20,6 +20,7 @@
     "start:mocks": "cross-env NODE_ENV=production node --require ./mocks --require dotenv/config ./build/server.js",
     "data:import": "ts-node --require tsconfig-paths/register data/import.ts",
     "data:seed": "ts-node --require tsconfig-paths/register data/seed.ts",
+    "data:score": "ts-node --require tsconfig-paths/register data/score.ts",
     "test": "vitest",
     "test:e2e:dev": "start-server-and-test dev http://localhost:3000 \"cypress open\"",
     "pretest:e2e:run": "npm run build",
