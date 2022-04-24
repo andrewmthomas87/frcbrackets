@@ -182,6 +182,8 @@ model EinsteinPrediction {
   secondSeedDivisionKey String
   winner                Division @relation(name: "winners", fields: [winnerDivisionKey], references: [key])
   winnerDivisionKey     String
+
+  score EinsteinPredictionScore?
 }
 
 model DivisionPredictionScore {
@@ -194,4 +196,17 @@ model DivisionPredictionScore {
   averagePlayoffMatchScore       Int
   alliances                      Int
   bracket                        Int
+}
+
+model EinsteinPredictionScore {
+  einsteinPrediction       EinsteinPrediction @relation(fields: [einsteinPredictionUserID], references: [userID])
+  einsteinPredictionUserID String             @unique
+
+  sum                           Int
+  averageRRAllianceHangarPoints Int
+  averageFinalsMatchScore       Int
+  results                       Int
+  firstSeed                     Int
+  secondSeed                    Int
+  winner                        Int
 }

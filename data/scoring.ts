@@ -1,6 +1,7 @@
 import type {
   DivisionPrediction,
   DivisionPredictionAlliance,
+  EinsteinPrediction,
   User,
 } from "@prisma/client";
 import type { TBA } from "./api";
@@ -184,6 +185,84 @@ export function divisionPredictionScore(
 
   score.bracket =
     10 * correctAtLeastSemis + 10 * correctFinalists + 20 * correctWinners;
+
+  return score;
+}
+
+export type EinsteinData = {
+  averageRRAllianceHangarPoints: number;
+  averageFinalsMatchScore: number;
+  results: string[];
+  firstSeed: string;
+  secondSeed: string;
+  winner: string;
+};
+
+export type EinsteinPredictionScore = {
+  averageRRAllianceHangarPoints: number;
+  averageFinalsMatchScore: number;
+  results: number;
+  firstSeed: number;
+  secondSeed: number;
+  winner: number;
+};
+
+export function einsteinPredictionScore(
+  data: EinsteinData,
+  prediction: EinsteinPrediction
+): EinsteinPredictionScore {
+  const score: EinsteinPredictionScore = {
+    averageRRAllianceHangarPoints: 0,
+    averageFinalsMatchScore: 0,
+    results: 0,
+    firstSeed: 0,
+    secondSeed: 0,
+    winner: 0,
+  };
+
+  score.averageRRAllianceHangarPoints = Math.max(
+    0,
+    40 -
+      6 *
+        Math.abs(
+          Math.round(data.averageRRAllianceHangarPoints) -
+            prediction.averageRRAllianceHangarPoints
+        )
+  );
+  score.averageFinalsMatchScore = Math.max(
+    0,
+    40 -
+      2 *
+        Math.abs(
+          Math.round(data.averageFinalsMatchScore) -
+            prediction.averageFinalsMatchScore
+        )
+  );
+
+  for (let i = 0; i < data.results.length; i++) {
+    const winner = data.results[i];
+    const predictionWinner = prediction.results[i];
+
+    if (winner === predictionWinner) {
+      score.results += 15;
+    }
+  }
+
+  if (prediction.firstSeedDivisionKey === data.firstSeed) {
+    score.firstSeed += 50;
+  } else if (prediction.firstSeedDivisionKey === data.secondSeed) {
+    score.firstSeed += 30;
+  }
+
+  if (prediction.secondSeedDivisionKey === data.secondSeed) {
+    score.secondSeed += 50;
+  } else if (prediction.secondSeedDivisionKey === data.firstSeed) {
+    score.secondSeed += 30;
+  }
+
+  if (prediction.winnerDivisionKey === data.winner) {
+    score.winner = 100;
+  }
 
   return score;
 }
