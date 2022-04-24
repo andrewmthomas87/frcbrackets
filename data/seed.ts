@@ -179,7 +179,7 @@ async function seedDivisionTeamsAlternate() {
 
   console.log("Fetched alternate team list...");
 
-  for (let team of teams) {
+  for (const team of teams) {
     if (team.division_name === null) {
       console.log(`Skipping team ${team.team_number}: no division`);
 

@@ -21,6 +21,8 @@ model User {
   password            Password?
   divisionPredictions DivisionPrediction[]
   einsteinPrediction  EinsteinPrediction?
+
+  globalScore GlobalScore?
 }
 
 model Password {
@@ -209,4 +211,17 @@ model EinsteinPredictionScore {
   firstSeed                     Int
   secondSeed                    Int
   winner                        Int
+}
+
+model GlobalScore {
+  user   User   @relation(fields: [userID], references: [id])
+  userID String @unique
+
+  carvScore     Int
+  galScore      Int
+  hopScore      Int
+  newScore      Int
+  roeScore      Int
+  turScore      Int
+  einsteinScore Int
 }

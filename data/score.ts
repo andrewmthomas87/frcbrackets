@@ -14,7 +14,7 @@ import {
 async function scoreDivisions() {
   const divisions = await prisma.division.findMany();
 
-  for (let division of divisions) {
+  for (const division of divisions) {
     const predictions = await prisma.divisionPrediction.findMany({
       where: {
         division: { key: division.key },
@@ -111,7 +111,7 @@ async function scoreEinstein() {
     winner: EINSTEIN_WINNER,
   };
 
-  for (let prediction of predictions) {
+  for (const prediction of predictions) {
     const score = einsteinPredictionScore(data, prediction);
     const sum =
       score.averageRRAllianceHangarPoints +
@@ -142,10 +142,52 @@ async function scoreEinstein() {
   console.log("Scored Einstein");
 }
 
+async function scoreGlobal() {
+  const scores: Record<string, Record<string, number>> = {};
+
+  const divisionScores = await prisma.divisionPredictionScore.findMany();
+  for (const score of divisionScores) {
+    scores[score.divisionPredictionUserID] = {
+      ...scores[score.divisionPredictionUserID],
+      [score.divisionPredictionDivisionKey]: score.sum,
+    };
+  }
+
+  const einsteinScores = await prisma.einsteinPredictionScore.findMany();
+  for (const score of einsteinScores) {
+    scores[score.einsteinPredictionUserID] = {
+      ...scores[score.einsteinPredictionUserID],
+      einstein: score.sum,
+    };
+  }
+
+  for (const [userID, score] of Object.entries(scores)) {
+    await prisma.globalScore.create({
+      data: {
+        user: {
+          connect: {
+            id: userID,
+          },
+        },
+        carvScore: score["2022carv"] || 0,
+        galScore: score["2022gal"] || 0,
+        hopScore: score["2022hop"] || 0,
+        newScore: score["2022new"] || 0,
+        roeScore: score["2022roe"] || 0,
+        turScore: score["2022tur"] || 0,
+        einsteinScore: score["einstein"] || 0,
+      },
+    });
+  }
+
+  console.log("Scored global");
+}
+
 async function main() {
   try {
     await scoreDivisions();
     await scoreEinstein();
+    await scoreGlobal();
   } catch (e) {
     console.error(e);
     process.exit(1);
